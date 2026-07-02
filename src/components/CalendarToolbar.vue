@@ -28,18 +28,32 @@ defineEmits<{
 <template>
   <div class="erag-toolbar">
     <div class="erag-toolbar-left">
-      <button class="erag-btn erag-btn-icon erag-sidebar-toggle" title="Toggle sidebar" @click="$emit('sidebar-toggle')">☰</button>
-      <button class="erag-btn" style="font-weight:600" @click="$emit('today')">Today</button>
-      <button class="erag-btn erag-btn-icon" @click="$emit('prev')">&#8249;</button>
-      <button class="erag-btn erag-btn-icon" @click="$emit('next')">&#8250;</button>
+      <button class="erag-btn erag-btn-icon erag-sidebar-toggle" title="Toggle sidebar" @click="$emit('sidebar-toggle')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <path d="M9 3v18"></path>
+        </svg>
+      </button>
+      <button class="erag-btn erag-btn-today" @click="$emit('today')">Today</button>
+      <button class="erag-btn erag-btn-icon" title="Previous" @click="$emit('prev')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button class="erag-btn erag-btn-icon" title="Next" @click="$emit('next')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"></path>
+        </svg>
+      </button>
       <span class="erag-cal-title">{{ title }}</span>
     </div>
     <div class="erag-toolbar-right">
       <div class="erag-search-bar">
-        <svg class="erag-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+        <svg class="erag-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
         </svg>
-        <input type="search" placeholder="Search..." :value="search" @input="$emit('search', inputValue($event))">
+        <input type="search" placeholder="Search events..." :value="search" @input="$emit('search', inputValue($event))">
       </div>
       <div class="erag-view-tabs">
         <button
@@ -57,7 +71,13 @@ defineEmits<{
           {{ item[0].toUpperCase() + item.slice(1) }}
         </option>
       </select>
-      <button v-if="canCreate" class="erag-btn erag-btn-primary" @click="$emit('add')">+ Add</button>
+      <button v-if="canCreate" class="erag-btn erag-btn-primary" @click="$emit('add')">
+        <svg class="erag-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"></path>
+          <path d="M12 5v14"></path>
+        </svg>
+        Add
+      </button>
     </div>
   </div>
 </template>

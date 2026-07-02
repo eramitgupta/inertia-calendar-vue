@@ -1,7 +1,7 @@
-import { Fragment as e, computed as t, createBlock as n, createCommentVNode as r, createElementBlock as i, createElementVNode as a, createTextVNode as o, createVNode as s, defineComponent as c, isRef as l, mergeProps as u, nextTick as d, normalizeClass as f, normalizeProps as p, normalizeStyle as m, openBlock as h, reactive as g, ref as _, renderList as v, renderSlot as y, toDisplayString as b, toRef as x, unref as S, vModelSelect as C, vModelText as w, watch as T, withDirectives as E, withKeys as D, withModifiers as O } from "vue";
-import { useHttp as k } from "@inertiajs/vue3";
+import { Fragment as e, computed as t, createBlock as n, createCommentVNode as r, createElementBlock as i, createElementVNode as a, createStaticVNode as o, createTextVNode as s, createVNode as c, defineComponent as l, isRef as u, mergeProps as d, nextTick as f, normalizeClass as p, normalizeProps as m, normalizeStyle as h, onUnmounted as ee, openBlock as g, reactive as _, ref as v, renderList as y, renderSlot as b, toDisplayString as x, toRef as S, unref as C, vModelSelect as w, vModelText as T, watch as E, withDirectives as D, withKeys as O, withModifiers as k } from "vue";
+import { useHttp as A } from "@inertiajs/vue3";
 //#region src/constants.ts
-var A = [
+var j = [
 	"January",
 	"February",
 	"March",
@@ -14,7 +14,7 @@ var A = [
 	"October",
 	"November",
 	"December"
-], j = [
+], M = [
 	"Sun",
 	"Mon",
 	"Tue",
@@ -22,7 +22,7 @@ var A = [
 	"Thu",
 	"Fri",
 	"Sat"
-], M = [
+], N = [
 	"S",
 	"M",
 	"T",
@@ -30,7 +30,7 @@ var A = [
 	"T",
 	"F",
 	"S"
-], N = [
+], te = [
 	"#378ADD",
 	"#1D9E75",
 	"#D85A30",
@@ -59,19 +59,19 @@ var A = [
 	if (!n) return t.slice(0, 5);
 	let r = Number(n[1] || 0), i = Number(n[2] || 0), a = n[3]?.toLowerCase();
 	return a === "pm" && r < 12 && (r += 12), a === "am" && r === 12 && (r = 0), `${F(r)}:${F(i)}`;
-}, V = (e) => `${j[e.getDay()]}, ${A[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`, H = (e) => `${A[e.getMonth()]} ${e.getFullYear()}`, U = (e) => {
+}, V = (e) => `${M[e.getDay()]}, ${j[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`, H = (e) => `${j[e.getMonth()]} ${e.getFullYear()}`, U = (e) => {
 	let t = new Date(e);
 	t.setDate(t.getDate() - t.getDay());
 	let n = new Date(t);
-	return n.setDate(n.getDate() + 6), t.getMonth() === n.getMonth() ? `${A[t.getMonth()]} ${t.getDate()}-${n.getDate()}, ${t.getFullYear()}` : `${A[t.getMonth()]} ${t.getDate()} - ${A[n.getMonth()]} ${n.getDate()}`;
+	return n.setDate(n.getDate() + 6), t.getMonth() === n.getMonth() ? `${j[t.getMonth()]} ${t.getDate()}-${n.getDate()}, ${t.getFullYear()}` : `${j[t.getMonth()]} ${t.getDate()} - ${j[n.getMonth()]} ${n.getDate()}`;
 };
-function ee(e = {}) {
-	let n = t(() => "value" in e ? e.value : e), r = /* @__PURE__ */ new Date(), i = _(n.value.initialDate ? L(n.value.initialDate) : new Date(r.getFullYear(), r.getMonth(), r.getDate())), a = _(new Date(i.value.getFullYear(), i.value.getMonth(), 1)), o = _(n.value.initialView || "month"), s = _(n.value.sidebarOpen ?? !0), c = _(""), l = _([...n.value.calendars || []]), u = _([...n.value.events || []]), d = _(new Set(l.value.map((e) => e.id)));
-	T(() => n.value.events, (e) => {
+function ne(e = {}) {
+	let n = t(() => "value" in e ? e.value : e), r = /* @__PURE__ */ new Date(), i = v(n.value.initialDate ? L(n.value.initialDate) : new Date(r.getFullYear(), r.getMonth(), r.getDate())), a = v(new Date(i.value.getFullYear(), i.value.getMonth(), 1)), o = v(n.value.initialView || "month"), s = v(n.value.sidebarOpen ?? !0), c = v(""), l = v([...n.value.calendars || []]), u = v([...n.value.events || []]), d = v(new Set(l.value.map((e) => e.id)));
+	E(() => n.value.events, (e) => {
 		Array.isArray(e) && (u.value = [...e]);
-	}), T(() => n.value.calendars, (e) => {
+	}), E(() => n.value.calendars, (e) => {
 		Array.isArray(e) && e.length && (l.value = [...e], d.value = new Set(e.map((e) => e.id)));
-	}), T(() => n.value.sidebarOpen, (e) => {
+	}), E(() => n.value.sidebarOpen, (e) => {
 		typeof e == "boolean" && (s.value = e);
 	});
 	let f = t(() => o.value === "month" ? H(i.value) : o.value === "week" ? U(i.value) : o.value === "day" ? V(i.value) : "Agenda"), p = t(() => u.value.filter((e) => d.value.has(e.cal) ? !c.value || e.title.toLowerCase().includes(c.value.toLowerCase()) : !1)), m = () => Math.max(0, ...u.value.map((e) => Number(e.id)).filter(Number.isFinite)) + 1;
@@ -123,8 +123,8 @@ function ee(e = {}) {
 }
 //#endregion
 //#region src/composables/useCalendarModal.ts
-function te(e, t, n) {
-	let r = _(!1), i = _("create"), a = _(""), o = _(null);
+function re(e, t, n) {
+	let r = v(!1), i = v("create"), a = v(""), o = v(null);
 	return {
 		closeModal: () => {
 			r.value = !1, o.value = null;
@@ -146,7 +146,7 @@ function te(e, t, n) {
 }
 //#endregion
 //#region src/composables/useCalendarMutations.ts
-function ne({ calendar: e, canDelete: t, closeModal: n, emit: r, inertiaEvents: i, shouldPersist: a }) {
+function ie({ calendar: e, canDelete: t, closeModal: n, emit: r, inertiaEvents: i, shouldPersist: a }) {
 	let o = (t) => t.id && e.events.value.some((e) => String(e.id) === String(t.id)) ? e.saveEvent(t) : (e.events.value = [...e.events.value, t], t), s = (t, i) => {
 		let a = i ? e.saveEvent(t) : o(t);
 		i ? r.update(a) : r.create(a), n();
@@ -177,7 +177,7 @@ function ne({ calendar: e, canDelete: t, closeModal: n, emit: r, inertiaEvents: 
 }
 //#endregion
 //#region src/composables/useCalendarResource.ts
-function re(e) {
+function ae(e) {
 	let n = t(() => e.resource || e.calendar), r = t(() => ({
 		...e.config,
 		...n.value?.config || {}
@@ -210,18 +210,18 @@ function re(e) {
 }
 //#endregion
 //#region src/composables/useInertiaCalendarEvents.ts
-var ie = {
+var oe = {
 	create: null,
 	store: null,
 	update: null,
 	delete: null,
 	destroy: null
 }, W = (e, t) => typeof e == "function" ? e(t) : e && t?.id ? e.replace(":id", String(t.id)) : e || null;
-function ae(e = {}, n = {}) {
+function se(e = {}, n = {}) {
 	let r = {
-		...ie,
+		...oe,
 		...e
-	}, i = k({}), a = t(() => i.errors), o = t(() => i.processing), s = (e, t, r = {}, a = {}) => t ? (i.transform(() => r), i[e](t, {
+	}, i = A({}), a = t(() => i.errors), o = t(() => i.processing), s = (e, t, r = {}, a = {}) => t ? (i.transform(() => r), i[e](t, {
 		...n,
 		...a
 	}).catch(() => null)) : Promise.resolve(null);
@@ -256,7 +256,7 @@ function X() {
 }
 //#endregion
 //#region src/composables/useAgendaGroups.ts
-function oe(e, n) {
+function ce(e, n) {
 	return { groupedEvents: t(() => {
 		let t = new Date(e()), r = new Date(t);
 		r.setDate(r.getDate() + 14);
@@ -276,16 +276,16 @@ function oe(e, n) {
 }
 //#endregion
 //#region src/components/AgendaView.vue?vue&type=script&setup=true&lang.ts
-var se = {
+var le = {
 	key: 0,
 	class: "erag-agenda-wrap"
-}, ce = ["onClick"], le = { class: "erag-atime" }, ue = { class: "erag-atitle" }, de = {
+}, ue = ["onClick"], de = { class: "erag-atime" }, fe = { class: "erag-atitle" }, pe = {
 	key: 0,
 	class: "erag-adesc"
-}, fe = {
+}, me = {
 	key: 1,
 	class: "erag-empty"
-}, pe = /* @__PURE__ */ c({
+}, he = /* @__PURE__ */ l({
 	__name: "AgendaView",
 	props: {
 		currentDate: {},
@@ -293,26 +293,26 @@ var se = {
 	},
 	emits: ["detail"],
 	setup(t) {
-		let n = t, { groupedEvents: o } = oe(() => n.currentDate, () => n.events);
-		return (t, n) => S(o).length ? (h(), i("div", se, [(h(!0), i(e, null, v(S(o), (n) => (h(), i("div", {
+		let n = t, { groupedEvents: o } = ce(() => n.currentDate, () => n.events);
+		return (t, n) => C(o).length ? (g(), i("div", le, [(g(!0), i(e, null, y(C(o), (n) => (g(), i("div", {
 			key: n.date,
 			class: "erag-agenda-group"
-		}, [a("div", { class: f(["erag-agenda-date", { "erag-today-hdr": n.isToday }]) }, b(S(V)(S(L)(n.date))), 3), (h(!0), i(e, null, v(n.events, (e) => (h(), i("div", {
-			key: S(K)(e),
+		}, [a("div", { class: p(["erag-agenda-date", { "erag-today-hdr": n.isToday }]) }, x(C(V)(C(L)(n.date))), 3), (g(!0), i(e, null, y(n.events, (e) => (g(), i("div", {
+			key: C(K)(e),
 			class: "erag-agenda-ev",
 			onClick: (n) => t.$emit("detail", e)
 		}, [
 			a("div", {
 				class: "erag-acolor",
-				style: m({ background: e.color })
+				style: h({ background: e.color })
 			}, null, 4),
-			a("div", le, b(S(z)(e.start)) + " - " + b(S(z)(e.end)), 1),
-			a("div", null, [a("div", ue, b(e.title), 1), e.desc ? (h(), i("div", de, b(e.desc), 1)) : r("", !0)])
-		], 8, ce))), 128))]))), 128))])) : (h(), i("div", fe, "No events"));
+			a("div", de, x(C(z)(e.start)) + " - " + x(C(z)(e.end)), 1),
+			a("div", null, [a("div", fe, x(e.title), 1), e.desc ? (g(), i("div", pe, x(e.desc), 1)) : r("", !0)])
+		], 8, ue))), 128))]))), 128))])) : (g(), i("div", me, "No events"));
 	}
-}), me = (e) => String(e).padStart(2, "0");
-function he(e, n) {
-	let r = t(() => `${A[n().getMonth()].slice(0, 3)} ${n().getFullYear()}`);
+}), ge = (e) => String(e).padStart(2, "0");
+function _e(e, n) {
+	let r = t(() => `${j[n().getMonth()].slice(0, 3)} ${n().getFullYear()}`);
 	return {
 		miniDays: t(() => {
 			let t = n().getFullYear(), r = n().getMonth(), i = new Date(t, r, 1).getDay(), a = new Date(t, r + 1, 0).getDate(), o = I(/* @__PURE__ */ new Date()), s = I(e()), c = [];
@@ -321,7 +321,7 @@ function he(e, n) {
 				other: !0
 			});
 			for (let e = 1; e <= a; e += 1) {
-				let n = `${t}-${me(r + 1)}-${me(e)}`;
+				let n = `${t}-${ge(r + 1)}-${ge(e)}`;
 				c.push({
 					date: n,
 					label: e,
@@ -337,10 +337,7 @@ function he(e, n) {
 }
 //#endregion
 //#region src/components/CalendarSidebar.vue?vue&type=script&setup=true&lang.ts
-var ge = { class: "erag-mini-header" }, _e = { class: "erag-mini-title" }, ve = { style: {
-	display: "flex",
-	gap: "3px"
-} }, ye = { class: "erag-mini-grid" }, be = ["onClick"], xe = ["onClick"], Se = /* @__PURE__ */ c({
+var ve = { class: "erag-mini-header" }, ye = { class: "erag-mini-title" }, be = { class: "erag-mini-nav-group" }, xe = { class: "erag-mini-grid" }, Se = ["onClick"], Ce = ["onClick"], we = /* @__PURE__ */ l({
 	__name: "CalendarSidebar",
 	props: {
 		calendars: {},
@@ -360,45 +357,54 @@ var ge = { class: "erag-mini-header" }, _e = { class: "erag-mini-title" }, ve = 
 		"toggle-calendar"
 	],
 	setup(t) {
-		let n = t, { miniDays: r, miniTitle: o, parseMiniDate: s } = he(() => n.currentDate, () => n.miniDate);
-		return (n, c) => (h(), i("div", { class: f(["erag-sidebar", { "erag-collapsed": !t.open }]) }, [
-			a("div", null, [a("div", ge, [a("span", _e, b(S(o)), 1), a("div", ve, [a("button", {
+		let n = t, { miniDays: r, miniTitle: o, parseMiniDate: c } = _e(() => n.currentDate, () => n.miniDate);
+		return (n, l) => (g(), i("div", { class: p(["erag-sidebar", { "erag-collapsed": !t.open }]) }, [
+			a("div", null, [a("div", ve, [a("span", ye, x(C(o)), 1), a("div", be, [a("button", {
 				class: "erag-mini-nav",
-				onClick: c[0] ||= (e) => n.$emit("mini-prev")
-			}, "‹"), a("button", {
+				title: "Previous month",
+				onClick: l[0] ||= (e) => n.$emit("mini-prev")
+			}, [...l[3] ||= [a("svg", { viewBox: "0 0 24 24" }, [a("path", { d: "m15 18-6-6 6-6" })], -1)]]), a("button", {
 				class: "erag-mini-nav",
-				onClick: c[1] ||= (e) => n.$emit("mini-next")
-			}, "›")])]), a("div", ye, [(h(!0), i(e, null, v(S(M), (e) => (h(), i("div", {
+				title: "Next month",
+				onClick: l[1] ||= (e) => n.$emit("mini-next")
+			}, [...l[4] ||= [a("svg", { viewBox: "0 0 24 24" }, [a("path", { d: "m9 18 6-6-6-6" })], -1)]])])]), a("div", xe, [(g(!0), i(e, null, y(C(N), (e) => (g(), i("div", {
 				key: e,
 				class: "erag-mini-dow"
-			}, b(e), 1))), 128)), (h(!0), i(e, null, v(S(r), (e, t) => (h(), i("div", {
+			}, x(e), 1))), 128)), (g(!0), i(e, null, y(C(r), (e, t) => (g(), i("div", {
 				key: `${e.date || "other"}-${t}`,
-				class: f(["erag-mini-day", {
+				class: p(["erag-mini-day", {
 					"erag-other": e.other,
 					"erag-today": e.today,
 					"erag-selected": e.selected
 				}]),
-				onClick: (t) => e.date && n.$emit("select-date", S(s)(e.date))
-			}, b(e.label), 11, be))), 128))])]),
-			a("div", null, [c[3] ||= a("div", { class: "erag-legend-label" }, "Calendars", -1), a("div", null, [(h(!0), i(e, null, v(t.calendars, (e) => (h(), i("div", {
+				onClick: (t) => e.date && n.$emit("select-date", C(c)(e.date))
+			}, x(e.label), 11, Se))), 128))])]),
+			a("div", null, [l[5] ||= a("div", { class: "erag-legend-label" }, "Calendars", -1), a("div", null, [(g(!0), i(e, null, y(t.calendars, (e) => (g(), i("div", {
 				key: e.id,
 				class: "erag-legend-item",
 				onClick: (t) => n.$emit("toggle-calendar", e.id)
 			}, [a("div", {
 				class: "erag-legend-dot",
-				style: m({ background: t.visibleCalendars.has(e.id) ? e.color : "#ccc" })
-			}, null, 4), a("span", { style: m({ color: t.visibleCalendars.has(e.id) ? "#1a1a1a" : "#bbb" }) }, b(e.label), 5)], 8, xe))), 128))])]),
+				style: h({
+					background: t.visibleCalendars.has(e.id) ? e.color : "#cbd5e1",
+					borderColor: t.visibleCalendars.has(e.id) ? "transparent" : "rgba(0,0,0,0.1)"
+				})
+			}, null, 4), a("span", { class: p({ "erag-active": t.visibleCalendars.has(e.id) }) }, x(e.label), 3)], 8, Ce))), 128))])]),
 			a("div", null, [a("button", {
-				class: "erag-btn erag-btn-primary",
-				style: {
-					width: "100%",
-					"justify-content": "center"
-				},
-				onClick: c[2] ||= (e) => n.$emit("add")
-			}, "+ New event")])
+				class: "erag-btn erag-btn-primary erag-btn-block",
+				onClick: l[2] ||= (e) => n.$emit("add")
+			}, [...l[6] ||= [a("svg", {
+				class: "erag-btn-svg",
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2.5",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "M5 12h14" }), a("path", { d: "M12 5v14" })], -1), s(" New event ", -1)]])])
 		], 2));
 	}
-}), Z = (e) => e.target.value, Ce = { class: "erag-toolbar" }, we = { class: "erag-toolbar-left" }, Te = { class: "erag-cal-title" }, Ee = { class: "erag-toolbar-right" }, De = { class: "erag-search-bar" }, Oe = ["value"], ke = { class: "erag-view-tabs" }, Ae = ["onClick"], je = ["value"], Me = ["value"], Ne = /* @__PURE__ */ c({
+}), Z = (e) => e.target.value, Te = { class: "erag-toolbar" }, Ee = { class: "erag-toolbar-left" }, De = { class: "erag-cal-title" }, Oe = { class: "erag-toolbar-right" }, ke = { class: "erag-search-bar" }, Ae = ["value"], je = { class: "erag-view-tabs" }, Me = ["onClick"], Ne = ["value"], Pe = ["value"], Fe = /* @__PURE__ */ l({
 	__name: "CalendarToolbar",
 	props: {
 		canCreate: {
@@ -419,62 +425,101 @@ var ge = { class: "erag-mini-header" }, _e = { class: "erag-mini-title" }, ve = 
 		"view"
 	],
 	setup(t) {
-		return (n, o) => (h(), i("div", Ce, [a("div", we, [
+		return (n, o) => (g(), i("div", Te, [a("div", Ee, [
 			a("button", {
 				class: "erag-btn erag-btn-icon erag-sidebar-toggle",
 				title: "Toggle sidebar",
 				onClick: o[0] ||= (e) => n.$emit("sidebar-toggle")
-			}, "☰"),
+			}, [...o[7] ||= [a("svg", {
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("rect", {
+				width: "18",
+				height: "18",
+				x: "3",
+				y: "3",
+				rx: "2"
+			}), a("path", { d: "M9 3v18" })], -1)]]),
 			a("button", {
-				class: "erag-btn",
-				style: { "font-weight": "600" },
+				class: "erag-btn erag-btn-today",
 				onClick: o[1] ||= (e) => n.$emit("today")
 			}, "Today"),
 			a("button", {
 				class: "erag-btn erag-btn-icon",
+				title: "Previous",
 				onClick: o[2] ||= (e) => n.$emit("prev")
-			}, "‹"),
+			}, [...o[8] ||= [a("svg", {
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "m15 18-6-6 6-6" })], -1)]]),
 			a("button", {
 				class: "erag-btn erag-btn-icon",
+				title: "Next",
 				onClick: o[3] ||= (e) => n.$emit("next")
-			}, "›"),
-			a("span", Te, b(t.title), 1)
-		]), a("div", Ee, [
-			a("div", De, [o[7] ||= a("svg", {
+			}, [...o[9] ||= [a("svg", {
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "m9 18 6-6-6-6" })], -1)]]),
+			a("span", De, x(t.title), 1)
+		]), a("div", Oe, [
+			a("div", ke, [o[10] ||= a("svg", {
 				class: "erag-search-icon",
 				xmlns: "http://www.w3.org/2000/svg",
-				viewBox: "0 0 16 16",
-				"aria-hidden": "true"
-			}, [a("path", { d: "M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" })], -1), a("input", {
+				viewBox: "0 0 24 24"
+			}, [a("circle", {
+				cx: "11",
+				cy: "11",
+				r: "8"
+			}), a("path", { d: "m21 21-4.3-4.3" })], -1), a("input", {
 				type: "search",
-				placeholder: "Search...",
+				placeholder: "Search events...",
 				value: t.search,
-				onInput: o[4] ||= (e) => n.$emit("search", S(Z)(e))
-			}, null, 40, Oe)]),
-			a("div", ke, [(h(!0), i(e, null, v(S(P), (e) => (h(), i("button", {
+				onInput: o[4] ||= (e) => n.$emit("search", C(Z)(e))
+			}, null, 40, Ae)]),
+			a("div", je, [(g(!0), i(e, null, y(C(P), (e) => (g(), i("button", {
 				key: e,
-				class: f(["erag-view-tab", { "erag-active": t.view === e }]),
+				class: p(["erag-view-tab", { "erag-active": t.view === e }]),
 				onClick: (t) => n.$emit("view", e)
-			}, b(e[0].toUpperCase() + e.slice(1)), 11, Ae))), 128))]),
+			}, x(e[0].toUpperCase() + e.slice(1)), 11, Me))), 128))]),
 			a("select", {
 				class: "erag-btn erag-mobile-sel",
 				value: t.view,
-				onChange: o[5] ||= (e) => n.$emit("view", S(Z)(e))
-			}, [(h(!0), i(e, null, v(S(P), (e) => (h(), i("option", {
+				onChange: o[5] ||= (e) => n.$emit("view", C(Z)(e))
+			}, [(g(!0), i(e, null, y(C(P), (e) => (g(), i("option", {
 				key: e,
 				value: e
-			}, b(e[0].toUpperCase() + e.slice(1)), 9, Me))), 128))], 40, je),
-			t.canCreate ? (h(), i("button", {
+			}, x(e[0].toUpperCase() + e.slice(1)), 9, Pe))), 128))], 40, Ne),
+			t.canCreate ? (g(), i("button", {
 				key: 0,
 				class: "erag-btn erag-btn-primary",
 				onClick: o[6] ||= (e) => n.$emit("add")
-			}, "+ Add")) : r("", !0)
+			}, [...o[11] ||= [a("svg", {
+				class: "erag-btn-svg",
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2.5",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "M5 12h14" }), a("path", { d: "M12 5v14" })], -1), s(" Add ", -1)]])) : r("", !0)
 		])]));
 	}
 });
 //#endregion
 //#region src/composables/useDaySchedule.ts
-function Pe(e, n) {
+function Ie(e, n) {
 	let r = t(() => I(e())), i = t(() => I(/* @__PURE__ */ new Date())), a = t(() => Y(n(), r.value)), { hours: o, nowTop: s } = X();
 	return {
 		date: r,
@@ -487,7 +532,7 @@ function Pe(e, n) {
 }
 //#endregion
 //#region src/components/DayView.vue?vue&type=script&setup=true&lang.ts
-var Fe = { class: "erag-day-wrap" }, Ie = { class: "erag-day-hdr" }, Le = { class: "erag-day-scroll" }, Re = { class: "erag-time-col" }, ze = { class: "erag-time-label" }, Be = { class: "erag-dcol" }, Ve = ["onClick"], He = /* @__PURE__ */ c({
+var Le = { class: "erag-day-wrap" }, Re = { class: "erag-day-hdr" }, ze = { class: "erag-day-scroll" }, Be = { class: "erag-time-col" }, Ve = { class: "erag-time-label" }, He = { class: "erag-dcol" }, Ue = ["onClick"], We = /* @__PURE__ */ l({
 	__name: "DayView",
 	props: {
 		currentDate: {},
@@ -495,37 +540,37 @@ var Fe = { class: "erag-day-wrap" }, Ie = { class: "erag-day-hdr" }, Le = { clas
 	},
 	emits: ["add", "detail"],
 	setup(t) {
-		let n = t, { date: o, dayEvents: s, eventStyle: c, hours: l, nowTop: u, today: d } = Pe(() => n.currentDate, () => n.events);
-		return (n, f) => (h(), i("div", Fe, [a("div", Ie, b(S(V)(t.currentDate)), 1), a("div", Le, [a("div", Re, [(h(!0), i(e, null, v(S(l), (e) => (h(), i("div", {
+		let n = t, { date: o, dayEvents: s, eventStyle: c, hours: l, nowTop: u, today: d } = Ie(() => n.currentDate, () => n.events);
+		return (n, f) => (g(), i("div", Le, [a("div", Re, x(C(V)(t.currentDate)), 1), a("div", ze, [a("div", Be, [(g(!0), i(e, null, y(C(l), (e) => (g(), i("div", {
 			key: e,
 			class: "erag-time-slot"
-		}, [a("span", ze, b(e === 0 ? "" : S(z)(`${String(e).padStart(2, "0")}:00`)), 1)]))), 128))]), a("div", Be, [
-			(h(!0), i(e, null, v(S(l), (e) => (h(), i("div", {
+		}, [a("span", Ve, x(e === 0 ? "" : C(z)(`${String(e).padStart(2, "0")}:00`)), 1)]))), 128))]), a("div", He, [
+			(g(!0), i(e, null, y(C(l), (e) => (g(), i("div", {
 				key: e,
 				class: "erag-dslot",
-				onClick: f[0] ||= (e) => n.$emit("add", S(o))
+				onClick: f[0] ||= (e) => n.$emit("add", C(o))
 			}))), 128)),
-			(h(!0), i(e, null, v(S(s), (e) => (h(), i("div", {
-				key: S(K)(e),
+			(g(!0), i(e, null, y(C(s), (e) => (g(), i("div", {
+				key: C(K)(e),
 				class: "erag-devent",
-				style: m(S(c)(e, 28)),
-				onClick: O((t) => n.$emit("detail", e), ["stop"])
-			}, b(S(z)(e.start)) + "-" + b(S(z)(e.end)) + " " + b(e.title), 13, Ve))), 128)),
-			S(o) === S(d) ? (h(), i("div", {
+				style: h(C(c)(e, 28)),
+				onClick: k((t) => n.$emit("detail", e), ["stop"])
+			}, x(C(z)(e.start)) + "-" + x(C(z)(e.end)) + " " + x(e.title), 13, Ue))), 128)),
+			C(o) === C(d) ? (g(), i("div", {
 				key: 0,
 				class: "erag-now-line",
-				style: m({ top: `${S(u)}px` })
+				style: h({ top: `${C(u)}px` })
 			}, [...f[1] ||= [a("div", { class: "erag-now-dot" }, null, -1)]], 4)) : r("", !0)
 		])])]));
 	}
-}), Ue = (e, t) => e.find((e) => e.id === t.cal)?.label || t.cal, Q = (e, t) => {
+}), Ge = (e, t) => e.find((e) => e.id === t.cal)?.label || t.cal, Q = (e, t) => {
 	let n = t.mentioned_user_ids || [];
 	return e.filter((e) => n.includes(e.user_id)).map((e) => e.name).join(", ");
 };
 //#endregion
 //#region src/composables/useEventForm.ts
-function We({ calendars: e, event: t, onSave: n, open: r, selectedDate: i }) {
-	let a = _(""), o = g({
+function Ke({ calendars: e, event: t, onSave: n, open: r, selectedDate: i }) {
+	let a = v(""), o = _({
 		id: null,
 		title: "",
 		date: "",
@@ -542,7 +587,7 @@ function We({ calendars: e, event: t, onSave: n, open: r, selectedDate: i }) {
 		};
 		o.id = n?.id || null, o.title = n?.title || "", o.date = n?.date || i() || (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), o.start = B(n?.start || "09:00"), o.end = B(n?.end || "10:00"), o.cal = n?.cal || r.id, o.color = n?.color || r.color || "#378ADD", o.desc = n?.desc || "", o.mentioned_user_ids = [...n?.mentioned_user_ids || []], a.value = "";
 	};
-	return T(() => [
+	return E(() => [
 		e(),
 		t(),
 		r?.(),
@@ -572,8 +617,8 @@ function We({ calendars: e, event: t, onSave: n, open: r, selectedDate: i }) {
 }
 //#endregion
 //#region src/composables/useMentionUsers.ts
-function Ge(e, n) {
-	let r = _(""), i = _(null), a = _(!1), o = t(() => e.mentioned_user_ids || []), s = t(() => n().filter((e) => o.value.includes(e.user_id)));
+function qe(e, n) {
+	let r = v(""), i = v(null), a = v(!1), o = t(() => e.mentioned_user_ids || []), s = t(() => n().filter((e) => o.value.includes(e.user_id)));
 	return {
 		addMentionUser: (t) => {
 			e.mentioned_user_ids?.includes(t.user_id) || (e.mentioned_user_ids = [...e.mentioned_user_ids || [], t.user_id]), r.value = "", a.value = !1;
@@ -583,7 +628,7 @@ function Ge(e, n) {
 			return n().filter((t) => o.value.includes(t.user_id) ? !1 : !e || t.name.toLowerCase().includes(e));
 		}),
 		focusMentionSearch: async () => {
-			a.value = !0, await d(), i.value?.focus();
+			a.value = !0, await f(), i.value?.focus();
 		},
 		mentionListOpen: a,
 		mentionSearch: r,
@@ -599,28 +644,28 @@ function Ge(e, n) {
 }
 //#endregion
 //#region src/components/EventModal.vue?vue&type=script&setup=true&lang.ts
-var Ke = { class: "erag-modal" }, qe = { class: "erag-modal-hdr" }, Je = { class: "erag-modal-title" }, Ye = { class: "erag-detail-row" }, Xe = { class: "erag-detail-row" }, Ze = {
+var Je = { class: "erag-modal" }, Ye = { class: "erag-modal-hdr" }, Xe = { class: "erag-modal-title" }, Ze = { class: "erag-detail-row" }, Qe = { class: "erag-detail-row" }, $e = {
 	key: 0,
 	class: "erag-detail-row"
-}, Qe = { class: "erag-detail-row" }, $e = {
+}, et = { class: "erag-detail-row" }, tt = {
 	key: 1,
 	class: "erag-detail-row"
-}, et = { class: "erag-modal-footer" }, tt = ["disabled"], nt = ["disabled"], rt = { class: "erag-modal-hdr" }, it = { class: "erag-modal-title" }, at = { class: "erag-form-group" }, ot = { class: "erag-form-group" }, st = { class: "erag-form-group erag-form-row" }, ct = {
+}, nt = { class: "erag-modal-footer" }, rt = ["disabled"], it = ["disabled"], at = { class: "erag-modal-hdr" }, ot = { class: "erag-modal-title" }, st = { class: "erag-form-group" }, ct = { class: "erag-form-group erag-form-row" }, lt = ["value"], ut = { class: "erag-form-group erag-form-row" }, dt = {
 	key: 0,
 	class: "erag-form-error"
-}, lt = { class: "erag-form-group" }, ut = ["value"], dt = {
+}, ft = {
 	key: 1,
 	class: "erag-form-group"
-}, ft = ["onMousedown"], pt = {
+}, pt = ["onMousedown"], mt = {
 	key: 0,
 	class: "erag-mention-menu"
-}, mt = {
+}, ht = {
 	key: 0,
 	class: "erag-mention-results"
-}, ht = ["onMousedown"], gt = {
+}, gt = ["onMousedown"], _t = {
 	key: 1,
 	class: "erag-mention-empty"
-}, _t = { class: "erag-form-group" }, vt = { class: "erag-color-row" }, yt = ["onClick"], bt = { class: "erag-custom-color-row" }, xt = ["value"], St = { class: "erag-form-group" }, Ct = { class: "erag-modal-footer" }, wt = ["disabled"], Tt = ["disabled"], Et = /* @__PURE__ */ c({
+}, vt = { class: "erag-form-group" }, yt = { class: "erag-color-row" }, bt = ["onClick"], xt = { class: "erag-custom-color-row" }, St = ["value"], Ct = { class: "erag-form-group" }, wt = { class: "erag-modal-footer" }, Tt = ["disabled"], Et = ["disabled"], Dt = /* @__PURE__ */ l({
 	__name: "EventModal",
 	props: {
 		calendars: {},
@@ -653,172 +698,212 @@ var Ke = { class: "erag-modal" }, qe = { class: "erag-modal-hdr" }, Je = { class
 		"save"
 	],
 	setup(t, { emit: n }) {
-		let s = t, c = n, { form: u, save: d, setCustomColor: p, timeError: g } = We({
-			calendars: () => s.calendars,
-			event: () => s.event,
-			onSave: (e) => c("save", e),
-			open: () => s.open,
-			selectedDate: () => s.selectedDate
-		}), { addMentionUser: _, availableMentionUsers: y, focusMentionSearch: x, mentionListOpen: k, mentionSearch: A, mentionSearchInput: j, removeMentionUser: M, resetMentionSearch: P, selectedMentionUsers: F } = Ge(u, () => s.mentionUsers);
-		return T(() => [
-			s.open,
-			s.event,
-			s.selectedDate
-		], P, { immediate: !0 }), (n, s) => t.open ? (h(), i("div", {
+		let c = t, l = n, { form: d, save: f, setCustomColor: m, timeError: _ } = Ke({
+			calendars: () => c.calendars,
+			event: () => c.event,
+			onSave: (e) => l("save", e),
+			open: () => c.open,
+			selectedDate: () => c.selectedDate
+		}), { addMentionUser: v, availableMentionUsers: b, focusMentionSearch: S, mentionListOpen: A, mentionSearch: j, mentionSearchInput: M, removeMentionUser: N, resetMentionSearch: P, selectedMentionUsers: F } = qe(d, () => c.mentionUsers);
+		return E(() => [
+			c.open,
+			c.event,
+			c.selectedDate
+		], P, { immediate: !0 }), E(() => c.open, (e) => {
+			e ? document.body.classList.add("erag-no-scroll") : document.body.classList.remove("erag-no-scroll");
+		}, { immediate: !0 }), ee(() => {
+			document.body.classList.remove("erag-no-scroll");
+		}), (n, c) => t.open ? (g(), i("div", {
 			key: 0,
 			class: "erag-overlay",
-			onClick: s[23] ||= O((e) => n.$emit("close"), ["self"])
-		}, [a("div", Ke, [t.mode === "detail" && t.event ? (h(), i(e, { key: 0 }, [
+			onClick: c[23] ||= k((e) => n.$emit("close"), ["self"])
+		}, [a("div", Je, [t.mode === "detail" && t.event ? (g(), i(e, { key: 0 }, [
 			a("div", {
 				class: "erag-detail-bar",
-				style: m({ background: t.event.color })
+				style: h({ background: t.event.color })
 			}, null, 4),
-			a("div", qe, [a("span", Je, b(t.event.title), 1), a("button", {
+			a("div", Ye, [a("span", Xe, x(t.event.title), 1), a("button", {
 				class: "erag-modal-close",
-				onClick: s[0] ||= (e) => n.$emit("close")
-			}, "×")]),
-			a("div", Ye, [s[24] ||= a("span", { class: "erag-detail-icon" }, "📅", -1), a("span", null, b(S(V)(S(L)(t.event.date))), 1)]),
-			a("div", Xe, [s[25] ||= a("span", { class: "erag-detail-icon" }, "🕐", -1), a("span", null, b(S(z)(t.event.start)) + " - " + b(S(z)(t.event.end)), 1)]),
-			t.event.desc ? (h(), i("div", Ze, [s[26] ||= a("span", { class: "erag-detail-icon" }, "📝", -1), a("span", null, b(t.event.desc), 1)])) : r("", !0),
-			a("div", Qe, [s[27] ||= a("span", { class: "erag-detail-icon" }, "🏷", -1), a("span", null, b(S(Ue)(t.calendars, t.event)), 1)]),
-			S(Q)(t.mentionUsers, t.event) ? (h(), i("div", $e, [s[28] ||= a("span", { class: "erag-detail-icon" }, "@", -1), a("span", null, b(S(Q)(t.mentionUsers, t.event)), 1)])) : r("", !0),
-			a("div", et, [
-				t.permissions.delete ? (h(), i("button", {
+				title: "Close",
+				onClick: c[0] ||= (e) => n.$emit("close")
+			}, [...c[24] ||= [a("svg", {
+				class: "erag-modal-close-svg",
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2.5",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "M18 6 6 18" }), a("path", { d: "m6 6 12 12" })], -1)]])]),
+			a("div", Ze, [c[25] ||= o("<span class=\"erag-detail-icon\" title=\"Date\"><svg viewBox=\"0 0 24 24\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\" ry=\"2\"></rect><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"></line><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"></line><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"></line></svg></span>", 1), a("span", null, x(C(V)(C(L)(t.event.date))), 1)]),
+			a("div", Qe, [c[26] ||= a("span", {
+				class: "erag-detail-icon",
+				title: "Time"
+			}, [a("svg", { viewBox: "0 0 24 24" }, [a("circle", {
+				cx: "12",
+				cy: "12",
+				r: "10"
+			}), a("polyline", { points: "12 6 12 12 16 14" })])], -1), a("span", null, x(C(z)(t.event.start)) + " - " + x(C(z)(t.event.end)), 1)]),
+			t.event.desc ? (g(), i("div", $e, [c[27] ||= o("<span class=\"erag-detail-icon\" title=\"Notes\"><svg viewBox=\"0 0 24 24\"><line x1=\"21\" x2=\"3\" y1=\"6\" y2=\"6\"></line><line x1=\"21\" x2=\"9\" y1=\"12\" y2=\"12\"></line><line x1=\"21\" x2=\"7\" y1=\"18\" y2=\"18\"></line></svg></span>", 1), a("span", null, x(t.event.desc), 1)])) : r("", !0),
+			a("div", et, [c[28] ||= a("span", {
+				class: "erag-detail-icon",
+				title: "Calendar"
+			}, [a("svg", { viewBox: "0 0 24 24" }, [a("path", { d: "M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z" }), a("path", { d: "m7 7-.01.01" })])], -1), a("span", null, x(C(Ge)(t.calendars, t.event)), 1)]),
+			C(Q)(t.mentionUsers, t.event) ? (g(), i("div", tt, [c[29] ||= o("<span class=\"erag-detail-icon\" title=\"Mentioned users\"><svg viewBox=\"0 0 24 24\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"></path></svg></span>", 1), a("span", null, x(C(Q)(t.mentionUsers, t.event)), 1)])) : r("", !0),
+			a("div", nt, [
+				t.permissions.delete ? (g(), i("button", {
 					key: 0,
 					class: "erag-btn erag-btn-danger",
 					disabled: t.processing,
-					onClick: s[1] ||= (e) => n.$emit("delete", t.event)
-				}, "Delete", 8, tt)) : r("", !0),
+					onClick: c[1] ||= (e) => n.$emit("delete", t.event)
+				}, "Delete", 8, rt)) : r("", !0),
 				a("button", {
 					class: "erag-btn",
-					onClick: s[2] ||= (e) => n.$emit("close")
+					onClick: c[2] ||= (e) => n.$emit("close")
 				}, "Close"),
-				t.permissions.update ? (h(), i("button", {
+				t.permissions.update ? (g(), i("button", {
 					key: 1,
 					class: "erag-btn erag-btn-primary",
 					disabled: t.processing,
-					onClick: s[3] ||= (e) => n.$emit("edit", t.event)
-				}, "Edit", 8, nt)) : r("", !0)
+					onClick: c[3] ||= (e) => n.$emit("edit", t.event)
+				}, "Edit", 8, it)) : r("", !0)
 			])
-		], 64)) : (h(), i(e, { key: 1 }, [
-			a("div", rt, [a("span", it, b(S(u).id ? "Edit event" : "New event"), 1), a("button", {
+		], 64)) : (g(), i(e, { key: 1 }, [
+			a("div", at, [a("span", ot, x(C(d).id ? "Edit event" : "New event"), 1), a("button", {
 				class: "erag-modal-close",
-				onClick: s[4] ||= (e) => n.$emit("close")
-			}, "×")]),
-			a("div", at, [s[29] ||= a("label", { class: "erag-form-label" }, "Title", -1), E(a("input", {
-				"onUpdate:modelValue": s[5] ||= (e) => S(u).title = e,
+				title: "Cancel",
+				onClick: c[4] ||= (e) => n.$emit("close")
+			}, [...c[30] ||= [a("svg", {
+				class: "erag-modal-close-svg",
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2.5",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "M18 6 6 18" }), a("path", { d: "m6 6 12 12" })], -1)]])]),
+			a("div", st, [c[31] ||= a("label", { class: "erag-form-label" }, "Title", -1), D(a("input", {
+				"onUpdate:modelValue": c[5] ||= (e) => C(d).title = e,
 				class: "erag-form-input",
 				placeholder: "Event title"
-			}, null, 512), [[w, S(u).title]])]),
-			a("div", ot, [s[30] ||= a("label", { class: "erag-form-label" }, "Date", -1), E(a("input", {
-				"onUpdate:modelValue": s[6] ||= (e) => S(u).date = e,
+			}, null, 512), [[T, C(d).title]])]),
+			a("div", ct, [a("div", null, [c[32] ||= a("label", { class: "erag-form-label" }, "Date", -1), D(a("input", {
+				"onUpdate:modelValue": c[6] ||= (e) => C(d).date = e,
 				class: "erag-form-input",
 				type: "date"
-			}, null, 512), [[w, S(u).date]])]),
-			a("div", st, [a("div", null, [s[31] ||= a("label", { class: "erag-form-label" }, "Start", -1), E(a("input", {
-				"onUpdate:modelValue": s[7] ||= (e) => S(u).start = e,
-				class: "erag-form-input",
-				type: "time",
-				onBlur: s[8] ||= (e) => S(u).start = S(B)(S(u).start)
-			}, null, 544), [[w, S(u).start]])]), a("div", null, [s[32] ||= a("label", { class: "erag-form-label" }, "End", -1), E(a("input", {
-				"onUpdate:modelValue": s[9] ||= (e) => S(u).end = e,
-				class: "erag-form-input",
-				type: "time",
-				onBlur: s[10] ||= (e) => S(u).end = S(B)(S(u).end)
-			}, null, 544), [[w, S(u).end]])])]),
-			S(g) ? (h(), i("div", ct, b(S(g)), 1)) : r("", !0),
-			a("div", lt, [s[33] ||= a("label", { class: "erag-form-label" }, "Calendar", -1), E(a("select", {
-				"onUpdate:modelValue": s[11] ||= (e) => S(u).cal = e,
+			}, null, 512), [[T, C(d).date]])]), a("div", null, [c[33] ||= a("label", { class: "erag-form-label" }, "Calendar", -1), D(a("select", {
+				"onUpdate:modelValue": c[7] ||= (e) => C(d).cal = e,
 				class: "erag-form-input"
-			}, [(h(!0), i(e, null, v(t.calendars, (e) => (h(), i("option", {
+			}, [(g(!0), i(e, null, y(t.calendars, (e) => (g(), i("option", {
 				key: e.id,
 				value: e.id
-			}, b(e.label), 9, ut))), 128))], 512), [[C, S(u).cal]])]),
-			t.mentionUsersAllowed && t.mentionUsers.length ? (h(), i("div", dt, [s[34] ||= a("label", { class: "erag-form-label" }, "Mention users", -1), a("div", {
+			}, x(e.label), 9, lt))), 128))], 512), [[w, C(d).cal]])])]),
+			a("div", ut, [a("div", null, [c[34] ||= a("label", { class: "erag-form-label" }, "Start", -1), D(a("input", {
+				"onUpdate:modelValue": c[8] ||= (e) => C(d).start = e,
+				class: "erag-form-input",
+				type: "time",
+				onBlur: c[9] ||= (e) => C(d).start = C(B)(C(d).start)
+			}, null, 544), [[T, C(d).start]])]), a("div", null, [c[35] ||= a("label", { class: "erag-form-label" }, "End", -1), D(a("input", {
+				"onUpdate:modelValue": c[10] ||= (e) => C(d).end = e,
+				class: "erag-form-input",
+				type: "time",
+				onBlur: c[11] ||= (e) => C(d).end = C(B)(C(d).end)
+			}, null, 544), [[T, C(d).end]])])]),
+			C(_) ? (g(), i("div", dt, x(C(_)), 1)) : r("", !0),
+			t.mentionUsersAllowed && t.mentionUsers.length ? (g(), i("div", ft, [c[37] ||= a("label", { class: "erag-form-label" }, "Mention users", -1), a("div", {
 				class: "erag-mention-select",
-				onFocusout: s[16] ||= (e) => k.value = !1
+				onFocusout: c[16] ||= (e) => A.value = !1
 			}, [a("div", {
 				class: "erag-mention-control",
-				onClick: s[15] ||= (...e) => S(x) && S(x)(...e)
-			}, [(h(!0), i(e, null, v(S(F), (e) => (h(), i("span", {
+				onClick: c[15] ||= (...e) => C(S) && C(S)(...e)
+			}, [(g(!0), i(e, null, y(C(F), (e) => (g(), i("span", {
 				key: e.user_id,
 				class: "erag-mention-chip"
-			}, [o(b(e.name) + " ", 1), a("button", {
+			}, [s(x(e.name) + " ", 1), a("button", {
 				type: "button",
 				class: "erag-mention-remove",
-				onMousedown: O((t) => S(M)(e.user_id), ["stop", "prevent"])
-			}, "×", 40, ft)]))), 128)), E(a("input", {
+				title: "Remove",
+				onMousedown: k((t) => C(N)(e.user_id), ["stop", "prevent"])
+			}, [...c[36] ||= [a("svg", {
+				class: "erag-mention-remove-svg",
+				viewBox: "0 0 24 24",
+				fill: "none",
+				stroke: "currentColor",
+				"stroke-width": "2.5",
+				"stroke-linecap": "round",
+				"stroke-linejoin": "round"
+			}, [a("path", { d: "M18 6 6 18" }), a("path", { d: "m6 6 12 12" })], -1)]], 40, pt)]))), 128)), D(a("input", {
 				ref_key: "mentionSearchInput",
-				ref: j,
-				"onUpdate:modelValue": s[12] ||= (e) => l(A) ? A.value = e : null,
+				ref: M,
+				"onUpdate:modelValue": c[12] ||= (e) => u(j) ? j.value = e : null,
 				class: "erag-mention-input",
 				placeholder: "Search users...",
-				onFocus: s[13] ||= (e) => k.value = !0,
-				onKeydown: s[14] ||= D((e) => k.value = !1, ["esc"])
-			}, null, 544), [[w, S(A)]])]), S(k) ? (h(), i("div", pt, [S(y).length ? (h(), i("div", mt, [(h(!0), i(e, null, v(S(y), (e) => (h(), i("button", {
+				onFocus: c[13] ||= (e) => A.value = !0,
+				onKeydown: c[14] ||= O((e) => A.value = !1, ["esc"])
+			}, null, 544), [[T, C(j)]])]), C(A) ? (g(), i("div", mt, [C(b).length ? (g(), i("div", ht, [(g(!0), i(e, null, y(C(b), (e) => (g(), i("button", {
 				key: e.user_id,
 				type: "button",
 				class: "erag-mention-item",
-				onMousedown: O((t) => S(_)(e), ["prevent"])
-			}, b(e.name), 41, ht))), 128))])) : r("", !0), S(y).length ? r("", !0) : (h(), i("div", gt, "No users found"))])) : r("", !0)], 32)])) : r("", !0),
-			a("div", _t, [
-				s[35] ||= a("label", { class: "erag-form-label" }, "Color", -1),
-				a("div", vt, [(h(!0), i(e, null, v(S(N), (e) => (h(), i("div", {
+				onMousedown: k((t) => C(v)(e), ["prevent"])
+			}, x(e.name), 41, gt))), 128))])) : r("", !0), C(b).length ? r("", !0) : (g(), i("div", _t, "No users found"))])) : r("", !0)], 32)])) : r("", !0),
+			a("div", vt, [
+				c[38] ||= a("label", { class: "erag-form-label" }, "Color", -1),
+				a("div", yt, [(g(!0), i(e, null, y(C(te), (e) => (g(), i("div", {
 					key: e,
-					class: f(["erag-cswatch", { "erag-sel": S(u).color === e }]),
-					style: m({ background: e }),
-					onClick: (t) => S(u).color = e
-				}, null, 14, yt))), 128))]),
-				a("div", bt, [
+					class: p(["erag-cswatch", { "erag-sel": C(d).color === e }]),
+					style: h({ background: e }),
+					onClick: (t) => C(d).color = e
+				}, null, 14, bt))), 128))]),
+				a("div", xt, [
 					a("span", {
 						class: "erag-custom-color-preview",
-						style: m({ background: S(u).color })
+						style: h({ background: C(d).color })
 					}, null, 4),
-					E(a("input", {
-						"onUpdate:modelValue": s[17] ||= (e) => S(u).color = e,
+					D(a("input", {
+						"onUpdate:modelValue": c[17] ||= (e) => C(d).color = e,
 						class: "erag-custom-color-picker",
 						type: "color",
 						"aria-label": "Pick custom color"
-					}, null, 512), [[w, S(u).color]]),
+					}, null, 512), [[T, C(d).color]]),
 					a("input", {
-						value: S(u).color,
+						value: C(d).color,
 						class: "erag-custom-color-input",
 						maxlength: "7",
 						placeholder: "#378ADD",
-						onInput: s[18] ||= (e) => S(p)(e.target.value)
-					}, null, 40, xt)
+						onInput: c[18] ||= (e) => C(m)(e.target.value)
+					}, null, 40, St)
 				])
 			]),
-			a("div", St, [s[36] ||= a("label", { class: "erag-form-label" }, "Notes", -1), E(a("textarea", {
-				"onUpdate:modelValue": s[19] ||= (e) => S(u).desc = e,
+			a("div", Ct, [c[39] ||= a("label", { class: "erag-form-label" }, "Notes", -1), D(a("textarea", {
+				"onUpdate:modelValue": c[19] ||= (e) => C(d).desc = e,
 				rows: "3",
 				class: "erag-form-input",
 				placeholder: "Add notes..."
-			}, null, 512), [[w, S(u).desc]])]),
-			a("div", Ct, [
-				S(u).id && t.permissions.delete ? (h(), i("button", {
+			}, null, 512), [[T, C(d).desc]])]),
+			a("div", wt, [
+				C(d).id && t.permissions.delete ? (g(), i("button", {
 					key: 0,
 					class: "erag-btn erag-btn-danger",
 					disabled: t.processing,
-					onClick: s[20] ||= (e) => n.$emit("delete", { ...S(u) })
-				}, "Delete", 8, wt)) : r("", !0),
+					onClick: c[20] ||= (e) => n.$emit("delete", { ...C(d) })
+				}, "Delete", 8, Tt)) : r("", !0),
 				a("button", {
 					class: "erag-btn",
-					onClick: s[21] ||= (e) => n.$emit("close")
+					onClick: c[21] ||= (e) => n.$emit("close")
 				}, "Cancel"),
-				(S(u).id ? t.permissions.update : t.permissions.create) ? (h(), i("button", {
+				(C(d).id ? t.permissions.update : t.permissions.create) ? (g(), i("button", {
 					key: 1,
 					class: "erag-btn erag-btn-primary",
 					disabled: t.processing,
-					onClick: s[22] ||= (...e) => S(d) && S(d)(...e)
-				}, b(S(u).id ? "Update" : "Add event"), 9, Tt)) : r("", !0)
+					onClick: c[22] ||= (...e) => C(f) && C(f)(...e)
+				}, x(C(d).id ? "Update" : "Add event"), 9, Et)) : r("", !0)
 			])
 		], 64))])])) : r("", !0);
 	}
 });
 //#endregion
 //#region src/composables/useMonthGrid.ts
-function Dt(e, n) {
+function Ot(e, n) {
 	return { cells: t(() => {
 		let t = e().getFullYear(), r = e().getMonth(), i = new Date(t, r, 1).getDay(), a = new Date(t, r, 1 - i), o = I(/* @__PURE__ */ new Date());
 		return Array.from({ length: 42 }, (e, t) => {
@@ -837,22 +922,10 @@ function Dt(e, n) {
 }
 //#endregion
 //#region src/components/MonthView.vue?vue&type=script&setup=true&lang.ts
-var Ot = { style: {
-	display: "flex",
-	"flex-direction": "column",
-	flex: "1",
-	height: "100%",
-	"min-height": "0"
-} }, kt = { class: "erag-month-dow-row" }, At = {
-	class: "erag-month-grid",
-	style: {
-		flex: "1",
-		overflow: "hidden"
-	}
-}, jt = ["onClick"], Mt = { class: "erag-day-num" }, Nt = ["onClick"], Pt = {
+var kt = { class: "erag-month-wrap" }, At = { class: "erag-month-dow-row" }, jt = { class: "erag-month-grid" }, Mt = ["onClick"], Nt = { class: "erag-day-num" }, Pt = ["onClick"], Ft = {
 	key: 0,
 	class: "erag-more"
-}, Ft = /* @__PURE__ */ c({
+}, It = /* @__PURE__ */ l({
 	__name: "MonthView",
 	props: {
 		currentDate: {},
@@ -860,35 +933,35 @@ var Ot = { style: {
 	},
 	emits: ["add", "detail"],
 	setup(t) {
-		let n = t, { cells: o } = Dt(() => n.currentDate, () => n.events);
-		return (t, n) => (h(), i("div", Ot, [a("div", kt, [(h(!0), i(e, null, v(S(j), (e) => (h(), i("div", {
+		let n = t, { cells: o } = Ot(() => n.currentDate, () => n.events);
+		return (t, n) => (g(), i("div", kt, [a("div", At, [(g(!0), i(e, null, y(C(M), (e) => (g(), i("div", {
 			key: e,
 			class: "erag-dow"
-		}, b(e), 1))), 128))]), a("div", At, [(h(!0), i(e, null, v(S(o), (n) => (h(), i("div", {
+		}, x(e), 1))), 128))]), a("div", jt, [(g(!0), i(e, null, y(C(o), (n) => (g(), i("div", {
 			key: n.value,
-			class: f(["erag-cell", {
+			class: p(["erag-cell", {
 				"erag-other-month": n.other,
 				"erag-today": n.today
 			}]),
 			onClick: (e) => t.$emit("add", n.value)
 		}, [
-			a("div", Mt, b(n.date.getDate()), 1),
-			(h(!0), i(e, null, v(n.events.slice(0, 3), (e) => (h(), i("div", {
-				key: S(K)(e),
+			a("div", Nt, x(n.date.getDate()), 1),
+			(g(!0), i(e, null, y(n.events.slice(0, 3), (e) => (g(), i("div", {
+				key: C(K)(e),
 				class: "erag-pill",
-				style: m({
+				style: h({
 					background: `${e.color}22`,
 					color: e.color
 				}),
-				onClick: O((n) => t.$emit("detail", e), ["stop"])
-			}, b(e.start === "00:00" ? "" : `${S(z)(e.start)} `) + b(e.title), 13, Nt))), 128)),
-			n.events.length > 3 ? (h(), i("div", Pt, "+" + b(n.events.length - 3) + " more", 1)) : r("", !0)
-		], 10, jt))), 128))])]));
+				onClick: k((n) => t.$emit("detail", e), ["stop"])
+			}, x(e.start === "00:00" ? "" : `${C(z)(e.start)} `) + x(e.title), 13, Pt))), 128)),
+			n.events.length > 3 ? (g(), i("div", Ft, "+" + x(n.events.length - 3) + " more", 1)) : r("", !0)
+		], 10, Mt))), 128))])]));
 	}
 });
 //#endregion
 //#region src/composables/useWeekGrid.ts
-function It(e, n) {
+function Lt(e, n) {
 	let r = t(() => I(/* @__PURE__ */ new Date())), { hours: i, nowTop: a } = X();
 	return {
 		eventsFor: (e) => Y(n(), e),
@@ -907,7 +980,7 @@ function It(e, n) {
 }
 //#endregion
 //#region src/components/WeekView.vue?vue&type=script&setup=true&lang.ts
-var Lt = { class: "erag-week-wrap" }, Rt = { class: "erag-week-head" }, zt = { class: "erag-wday-name" }, Bt = { class: "erag-wday-num" }, Vt = { class: "erag-week-scroll" }, Ht = { class: "erag-time-col" }, Ut = { class: "erag-time-label" }, Wt = ["onClick"], Gt = ["onClick"], Kt = /* @__PURE__ */ c({
+var Rt = { class: "erag-week-wrap" }, zt = { class: "erag-week-head" }, Bt = { class: "erag-wday-name" }, Vt = { class: "erag-wday-num" }, Ht = { class: "erag-week-scroll" }, Ut = { class: "erag-time-col" }, Wt = { class: "erag-time-label" }, Gt = ["onClick"], Kt = ["onClick"], qt = /* @__PURE__ */ l({
 	__name: "WeekView",
 	props: {
 		currentDate: {},
@@ -915,39 +988,39 @@ var Lt = { class: "erag-week-wrap" }, Rt = { class: "erag-week-head" }, zt = { c
 	},
 	emits: ["add", "detail"],
 	setup(t) {
-		let n = t, { eventsFor: o, eventStyle: s, hours: c, nowTop: l, today: u, weekDays: d } = It(() => n.currentDate, () => n.events);
-		return (t, n) => (h(), i("div", Lt, [a("div", Rt, [n[0] ||= a("div", { class: "erag-wgutter" }, null, -1), (h(!0), i(e, null, v(S(d), (e) => (h(), i("div", {
-			key: S(I)(e),
-			class: f(["erag-wday-head", { "erag-today": S(I)(e) === S(u) }])
-		}, [a("div", zt, b(S(j)[e.getDay()]), 1), a("div", Bt, b(e.getDate()), 1)], 2))), 128))]), a("div", Vt, [a("div", Ht, [(h(!0), i(e, null, v(S(c), (e) => (h(), i("div", {
+		let n = t, { eventsFor: o, eventStyle: s, hours: c, nowTop: l, today: u, weekDays: d } = Lt(() => n.currentDate, () => n.events);
+		return (t, n) => (g(), i("div", Rt, [a("div", zt, [n[0] ||= a("div", { class: "erag-wgutter" }, null, -1), (g(!0), i(e, null, y(C(d), (e) => (g(), i("div", {
+			key: C(I)(e),
+			class: p(["erag-wday-head", { "erag-today": C(I)(e) === C(u) }])
+		}, [a("div", Bt, x(C(M)[e.getDay()]), 1), a("div", Vt, x(e.getDate()), 1)], 2))), 128))]), a("div", Ht, [a("div", Ut, [(g(!0), i(e, null, y(C(c), (e) => (g(), i("div", {
 			key: e,
 			class: "erag-time-slot"
-		}, [a("span", Ut, b(e === 0 ? "" : S(z)(`${String(e).padStart(2, "0")}:00`)), 1)]))), 128))]), (h(!0), i(e, null, v(S(d), (d) => (h(), i("div", {
-			key: S(I)(d),
+		}, [a("span", Wt, x(e === 0 ? "" : C(z)(`${String(e).padStart(2, "0")}:00`)), 1)]))), 128))]), (g(!0), i(e, null, y(C(d), (d) => (g(), i("div", {
+			key: C(I)(d),
 			class: "erag-wcol"
 		}, [
-			(h(!0), i(e, null, v(S(c), (e) => (h(), i("div", {
+			(g(!0), i(e, null, y(C(c), (e) => (g(), i("div", {
 				key: e,
 				class: "erag-wslot",
-				onClick: (e) => t.$emit("add", S(I)(d))
-			}, null, 8, Wt))), 128)),
-			(h(!0), i(e, null, v(S(o)(d), (e) => (h(), i("div", {
-				key: S(K)(e),
+				onClick: (e) => t.$emit("add", C(I)(d))
+			}, null, 8, Gt))), 128)),
+			(g(!0), i(e, null, y(C(o)(d), (e) => (g(), i("div", {
+				key: C(K)(e),
 				class: "erag-wevent",
-				style: m(S(s)(e)),
-				onClick: O((n) => t.$emit("detail", e), ["stop"])
-			}, b(S(z)(e.start)) + " " + b(e.title), 13, Gt))), 128)),
-			S(I)(d) === S(u) ? (h(), i("div", {
+				style: h(C(s)(e)),
+				onClick: k((n) => t.$emit("detail", e), ["stop"])
+			}, x(C(z)(e.start)) + " " + x(e.title), 13, Kt))), 128)),
+			C(I)(d) === C(u) ? (g(), i("div", {
 				key: 0,
 				class: "erag-now-line",
-				style: m({ top: `${S(l)}px` })
+				style: h({ top: `${C(l)}px` })
 			}, [...n[1] ||= [a("div", { class: "erag-now-dot" }, null, -1)]], 4)) : r("", !0)
 		]))), 128))])]));
 	}
-}), qt = {
+}), Jt = {
 	key: 1,
 	class: "erag-cal-root"
-}, Jt = { class: "erag-body" }, Yt = { class: "erag-main" }, $ = /* @__PURE__ */ c({
+}, Yt = { class: "erag-body" }, Xt = { class: "erag-main" }, $ = /* @__PURE__ */ l({
 	__name: "Calendar",
 	props: {
 		resource: { default: void 0 },
@@ -981,126 +1054,126 @@ var Lt = { class: "erag-week-wrap" }, Rt = { class: "erag-week-head" }, zt = { c
 		"update"
 	],
 	setup(e, { emit: o }) {
-		let c = e, l = o, { calendarOptions: d, config: f, mentionUsers: m, permissions: g, routes: _, shouldPersist: v } = re(c), b = ee(x(() => d.value)), C = ae(_.value, c.visitOptions), { closeModal: w, modalMode: T, modalOpen: E, openCreate: D, openDetail: O, openEdit: k, selectedDate: A, selectedEvent: j } = te(b.currentDate, () => g.value.create, () => g.value.update), { deleteEvent: M, saveEvent: N } = ne({
-			calendar: b,
-			canDelete: () => g.value.delete,
-			closeModal: w,
+		let s = e, l = o, { calendarOptions: u, config: f, mentionUsers: p, permissions: h, routes: ee, shouldPersist: _ } = ae(s), v = ne(S(() => u.value)), y = se(ee.value, s.visitOptions), { closeModal: x, modalMode: w, modalOpen: T, openCreate: E, openDetail: D, openEdit: O, selectedDate: k, selectedEvent: A } = re(v.currentDate, () => h.value.create, () => h.value.update), { deleteEvent: j, saveEvent: M } = ie({
+			calendar: v,
+			canDelete: () => h.value.delete,
+			closeModal: x,
 			emit: {
 				create: (e) => l("create", e),
 				delete: (e) => l("delete", e),
 				update: (e) => l("update", e)
 			},
-			inertiaEvents: C,
-			shouldPersist: v
-		}), P = t(() => ({
-			...b,
-			errors: C.errors,
-			processing: C.processing,
-			closeModal: w,
-			deleteEvent: M,
-			modalMode: T,
-			modalOpen: E,
-			openCreate: D,
-			openDetail: O,
-			openEdit: k,
-			saveEvent: N,
-			selectedDate: A,
-			selectedEvent: j
+			inertiaEvents: y,
+			shouldPersist: _
+		}), N = t(() => ({
+			...v,
+			errors: y.errors,
+			processing: y.processing,
+			closeModal: x,
+			deleteEvent: j,
+			modalMode: w,
+			modalOpen: T,
+			openCreate: E,
+			openDetail: D,
+			openEdit: O,
+			saveEvent: M,
+			selectedDate: k,
+			selectedEvent: A
 		}));
-		return (t, o) => e.headless ? y(t.$slots, "default", p(u({ key: 0 }, P.value))) : (h(), i("div", qt, [
-			s(Ne, {
-				search: S(b).search.value,
-				"can-create": S(g).create,
-				title: S(b).title.value,
-				view: S(b).currentView.value,
-				onAdd: o[0] ||= (e) => S(D)(),
-				onNext: o[1] ||= (e) => S(b).navigate(1),
-				onPrev: o[2] ||= (e) => S(b).navigate(-1),
-				onSearch: o[3] ||= (e) => S(b).search.value = e,
-				onSidebarToggle: o[4] ||= (e) => S(b).sidebarOpen.value = !S(b).sidebarOpen.value,
-				onToday: o[5] ||= (e) => S(b).goToday(),
-				onView: o[6] ||= (e) => S(b).setView(e)
+		return (t, o) => e.headless ? b(t.$slots, "default", m(d({ key: 0 }, N.value))) : (g(), i("div", Jt, [
+			c(Fe, {
+				search: C(v).search.value,
+				"can-create": C(h).create,
+				title: C(v).title.value,
+				view: C(v).currentView.value,
+				onAdd: o[0] ||= (e) => C(E)(),
+				onNext: o[1] ||= (e) => C(v).navigate(1),
+				onPrev: o[2] ||= (e) => C(v).navigate(-1),
+				onSearch: o[3] ||= (e) => C(v).search.value = e,
+				onSidebarToggle: o[4] ||= (e) => C(v).sidebarOpen.value = !C(v).sidebarOpen.value,
+				onToday: o[5] ||= (e) => C(v).goToday(),
+				onView: o[6] ||= (e) => C(v).setView(e)
 			}, null, 8, [
 				"search",
 				"can-create",
 				"title",
 				"view"
 			]),
-			a("div", Jt, [S(f).sidebar === !1 ? r("", !0) : (h(), n(Se, {
+			a("div", Yt, [C(f).sidebar === !1 ? r("", !0) : (g(), n(we, {
 				key: 0,
-				calendars: S(b).calendars.value,
-				"current-date": S(b).currentDate.value,
-				"mini-date": S(b).miniDate.value,
-				open: S(b).sidebarOpen.value,
-				"visible-calendars": S(b).visibleCalendars.value,
-				onAdd: o[7] ||= (e) => S(D)(),
-				onMiniNext: o[8] ||= (e) => S(b).miniDate.value = new Date(S(b).miniDate.value.getFullYear(), S(b).miniDate.value.getMonth() + 1, 1),
-				onMiniPrev: o[9] ||= (e) => S(b).miniDate.value = new Date(S(b).miniDate.value.getFullYear(), S(b).miniDate.value.getMonth() - 1, 1),
-				onSelectDate: o[10] ||= (e) => S(b).selectDate(e),
-				onToggleCalendar: o[11] ||= (e) => S(b).toggleCalendar(e)
+				calendars: C(v).calendars.value,
+				"current-date": C(v).currentDate.value,
+				"mini-date": C(v).miniDate.value,
+				open: C(v).sidebarOpen.value,
+				"visible-calendars": C(v).visibleCalendars.value,
+				onAdd: o[7] ||= (e) => C(E)(),
+				onMiniNext: o[8] ||= (e) => C(v).miniDate.value = new Date(C(v).miniDate.value.getFullYear(), C(v).miniDate.value.getMonth() + 1, 1),
+				onMiniPrev: o[9] ||= (e) => C(v).miniDate.value = new Date(C(v).miniDate.value.getFullYear(), C(v).miniDate.value.getMonth() - 1, 1),
+				onSelectDate: o[10] ||= (e) => C(v).selectDate(e),
+				onToggleCalendar: o[11] ||= (e) => C(v).toggleCalendar(e)
 			}, null, 8, [
 				"calendars",
 				"current-date",
 				"mini-date",
 				"open",
 				"visible-calendars"
-			])), a("main", Yt, [S(b).currentView.value === "month" ? (h(), n(Ft, {
+			])), a("main", Xt, [C(v).currentView.value === "month" ? (g(), n(It, {
 				key: 0,
-				"current-date": S(b).currentDate.value,
-				events: S(b).filteredEvents.value,
-				onAdd: S(D),
-				onDetail: S(O)
+				"current-date": C(v).currentDate.value,
+				events: C(v).filteredEvents.value,
+				onAdd: C(E),
+				onDetail: C(D)
 			}, null, 8, [
 				"current-date",
 				"events",
 				"onAdd",
 				"onDetail"
-			])) : S(b).currentView.value === "week" ? (h(), n(Kt, {
+			])) : C(v).currentView.value === "week" ? (g(), n(qt, {
 				key: 1,
-				"current-date": S(b).currentDate.value,
-				events: S(b).filteredEvents.value,
-				onAdd: S(D),
-				onDetail: S(O)
+				"current-date": C(v).currentDate.value,
+				events: C(v).filteredEvents.value,
+				onAdd: C(E),
+				onDetail: C(D)
 			}, null, 8, [
 				"current-date",
 				"events",
 				"onAdd",
 				"onDetail"
-			])) : S(b).currentView.value === "day" ? (h(), n(He, {
+			])) : C(v).currentView.value === "day" ? (g(), n(We, {
 				key: 2,
-				"current-date": S(b).currentDate.value,
-				events: S(b).filteredEvents.value,
-				onAdd: S(D),
-				onDetail: S(O)
+				"current-date": C(v).currentDate.value,
+				events: C(v).filteredEvents.value,
+				onAdd: C(E),
+				onDetail: C(D)
 			}, null, 8, [
 				"current-date",
 				"events",
 				"onAdd",
 				"onDetail"
-			])) : (h(), n(pe, {
+			])) : (g(), n(he, {
 				key: 3,
-				"current-date": S(b).currentDate.value,
-				events: S(b).filteredEvents.value,
-				onDetail: S(O)
+				"current-date": C(v).currentDate.value,
+				events: C(v).filteredEvents.value,
+				onDetail: C(D)
 			}, null, 8, [
 				"current-date",
 				"events",
 				"onDetail"
 			]))])]),
-			s(Et, {
-				calendars: S(b).calendars.value,
-				event: S(j),
-				"mention-users": S(m),
-				"mention-users-allowed": S(f).mention_users !== !1,
-				mode: S(T),
-				open: S(E),
-				permissions: S(g),
-				processing: S(C).processing.value,
-				"selected-date": S(A),
-				onClose: S(w),
-				onDelete: S(M),
-				onEdit: S(k),
-				onSave: S(N)
+			c(Dt, {
+				calendars: C(v).calendars.value,
+				event: C(A),
+				"mention-users": C(p),
+				"mention-users-allowed": C(f).mention_users !== !1,
+				mode: C(w),
+				open: C(T),
+				permissions: C(h),
+				processing: C(y).processing.value,
+				"selected-date": C(k),
+				onClose: C(x),
+				onDelete: C(j),
+				onEdit: C(O),
+				onSave: C(M)
 			}, null, 8, [
 				"calendars",
 				"event",
@@ -1118,10 +1191,10 @@ var Lt = { class: "erag-week-wrap" }, Rt = { class: "erag-week-head" }, zt = { c
 			])
 		]));
 	}
-}), Xt = { install(e) {
+}), Zt = { install(e) {
 	e.component("InertiaCalendar", $);
 } };
 //#endregion
-export { pe as AgendaView, $ as Calendar, $ as InertiaCalendar, Se as CalendarSidebar, Ne as CalendarToolbar, He as DayView, Et as EventModal, Ft as MonthView, Kt as WeekView, Ue as calendarLabel, I as dateToString, j as days, Xt as default, K as eventKey, q as eventTimeStyle, Y as eventsForDate, V as formatLongDate, H as formatMonthYear, z as formatTime, U as formatWeekRange, Z as inputValue, Q as mentionedUsersLabel, A as months, B as normalizeTime, L as parseDate, M as shortDays, J as sortEventsByTime, N as swatchColors, R as timeToMinutes, oe as useAgendaGroups, ee as useCalendar, te as useCalendarModal, ne as useCalendarMutations, re as useCalendarResource, Pe as useDaySchedule, We as useEventForm, ae as useInertiaCalendarEvents, Ge as useMentionUsers, he as useMiniCalendar, Dt as useMonthGrid, X as useTimeSlots, It as useWeekGrid, P as views };
+export { he as AgendaView, $ as Calendar, $ as InertiaCalendar, we as CalendarSidebar, Fe as CalendarToolbar, We as DayView, Dt as EventModal, It as MonthView, qt as WeekView, Ge as calendarLabel, I as dateToString, M as days, Zt as default, K as eventKey, q as eventTimeStyle, Y as eventsForDate, V as formatLongDate, H as formatMonthYear, z as formatTime, U as formatWeekRange, Z as inputValue, Q as mentionedUsersLabel, j as months, B as normalizeTime, L as parseDate, N as shortDays, J as sortEventsByTime, te as swatchColors, R as timeToMinutes, ce as useAgendaGroups, ne as useCalendar, re as useCalendarModal, ie as useCalendarMutations, ae as useCalendarResource, Ie as useDaySchedule, Ke as useEventForm, se as useInertiaCalendarEvents, qe as useMentionUsers, _e as useMiniCalendar, Ot as useMonthGrid, X as useTimeSlots, Lt as useWeekGrid, P as views };
 
 //# sourceMappingURL=inertia-calendar.js.map

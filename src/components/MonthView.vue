@@ -19,11 +19,11 @@ const { cells } = useMonthGrid(() => props.currentDate, () => props.events)
 </script>
 
 <template>
-  <div style="display:flex;flex-direction:column;flex:1;height:100%;min-height:0">
+  <div class="erag-month-wrap">
     <div class="erag-month-dow-row">
       <div v-for="day in days" :key="day" class="erag-dow">{{ day }}</div>
     </div>
-    <div class="erag-month-grid" style="flex:1;overflow:hidden">
+    <div class="erag-month-grid">
       <div
         v-for="cell in cells"
         :key="cell.value"

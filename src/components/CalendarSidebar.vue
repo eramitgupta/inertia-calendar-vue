@@ -29,9 +29,17 @@ const { miniDays, miniTitle, parseMiniDate } = useMiniCalendar(() => props.curre
     <div>
       <div class="erag-mini-header">
         <span class="erag-mini-title">{{ miniTitle }}</span>
-        <div style="display:flex;gap:3px">
-          <button class="erag-mini-nav" @click="$emit('mini-prev')">‹</button>
-          <button class="erag-mini-nav" @click="$emit('mini-next')">›</button>
+        <div class="erag-mini-nav-group">
+          <button class="erag-mini-nav" title="Previous month" @click="$emit('mini-prev')">
+            <svg viewBox="0 0 24 24">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="erag-mini-nav" title="Next month" @click="$emit('mini-next')">
+            <svg viewBox="0 0 24 24">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
         </div>
       </div>
       <div class="erag-mini-grid">
@@ -56,13 +64,19 @@ const { miniDays, miniTitle, parseMiniDate } = useMiniCalendar(() => props.curre
           class="erag-legend-item"
           @click="$emit('toggle-calendar', calendar.id)"
         >
-          <div class="erag-legend-dot" :style="{ background: visibleCalendars.has(calendar.id) ? calendar.color : '#ccc' }"></div>
-          <span :style="{ color: visibleCalendars.has(calendar.id) ? '#1a1a1a' : '#bbb' }">{{ calendar.label }}</span>
+          <div class="erag-legend-dot" :style="{ background: visibleCalendars.has(calendar.id) ? calendar.color : '#cbd5e1', borderColor: visibleCalendars.has(calendar.id) ? 'transparent' : 'rgba(0,0,0,0.1)' }"></div>
+          <span :class="{ 'erag-active': visibleCalendars.has(calendar.id) }">{{ calendar.label }}</span>
         </div>
       </div>
     </div>
     <div>
-      <button class="erag-btn erag-btn-primary" style="width:100%;justify-content:center" @click="$emit('add')">+ New event</button>
+      <button class="erag-btn erag-btn-primary erag-btn-block" @click="$emit('add')">
+        <svg class="erag-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"></path>
+          <path d="M12 5v14"></path>
+        </svg>
+        New event
+      </button>
     </div>
   </div>
 </template>
