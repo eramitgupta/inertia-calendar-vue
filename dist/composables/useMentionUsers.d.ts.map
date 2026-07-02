@@ -1,1 +1,0 @@
-{"version":3,"file":"useMentionUsers.d.ts","sourceRoot":"","sources":["../../src/composables/useMentionUsers.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,aAAa,EAAE,WAAW,EAAE,MAAM,UAAU,CAAA;AAE1D,wBAAgB,eAAe,CAAC,IAAI,EAAE,aAAa,EAAE,YAAY,EAAE,MAAM,WAAW,EAAE;2BAqBtD,WAAW,KAAG,IAAI;;8BAaX,OAAO,CAAC,IAAI,CAAC;;;;gCAJf,MAAM,KAAG,IAAI;8BAUjB,IAAI;;EAgBpC"}
