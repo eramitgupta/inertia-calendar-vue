@@ -1,0 +1,1 @@
+{"version":3,"file":"useCalendarLabels.d.ts","sourceRoot":"","sources":["../../src/composables/useCalendarLabels.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,aAAa,EAAE,WAAW,EAAE,MAAM,UAAU,CAAA;AAE9E,eAAO,MAAM,aAAa,GAAI,WAAW,kBAAkB,EAAE,EAAE,OAAO,aAAa,KAAG,MAAqF,CAAA;AAE3K,eAAO,MAAM,mBAAmB,GAAI,cAAc,WAAW,EAAE,EAAE,OAAO,aAAa,KAAG,MAOvF,CAAA"}
