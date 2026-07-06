@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
 
 defineEmits<{
   add: []
+  'add-task': []
   'mini-next': []
   'mini-prev': []
   'select-date': [date: Date]
@@ -69,13 +70,19 @@ const { miniDays, miniTitle, parseMiniDate } = useMiniCalendar(() => props.curre
         </div>
       </div>
     </div>
-    <div>
+    <div class="erag-sidebar-actions">
       <button class="erag-btn erag-btn-primary erag-btn-block" @click="$emit('add')">
         <svg class="erag-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12h14"></path>
           <path d="M12 5v14"></path>
         </svg>
         New event
+      </button>
+      <button class="erag-btn erag-btn-task erag-btn-block" @click="$emit('add-task')">
+        <svg class="erag-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"></path>
+        </svg>
+        New task
       </button>
     </div>
   </div>

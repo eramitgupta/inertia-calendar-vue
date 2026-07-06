@@ -55,21 +55,35 @@ defineEmits<{
         </svg>
         <input type="search" placeholder="Search events..." :value="search" @input="$emit('search', inputValue($event))">
       </div>
-      <div class="erag-view-tabs">
-        <button
-          v-for="item in views"
-          :key="item"
-          class="erag-view-tab"
-          :class="{ 'erag-active': view === item }"
-          @click="$emit('view', item)"
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="erag-view-tabs">
+          <button
+            v-for="item in views"
+            :key="item"
+            class="erag-view-tab"
+            :class="{ 'erag-active': view === item }"
+            @click="$emit('view', item)"
+          >
+            {{ item[0].toUpperCase() + item.slice(1) }}
+          </button>
+        </div>
+        <button 
+          class="erag-btn erag-btn-icon erag-settings-toggle-btn" 
+          :class="{ 'erag-active': view === 'settings' }" 
+          title="Settings" 
+          @click="$emit('view', 'settings')"
         >
-          {{ item[0].toUpperCase() + item.slice(1) }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
         </button>
       </div>
       <select class="erag-btn erag-mobile-sel" :value="view" @change="$emit('view', inputValue($event) as CalendarView)">
         <option v-for="item in views" :key="item" :value="item">
           {{ item[0].toUpperCase() + item.slice(1) }}
         </option>
+        <option value="settings">Settings</option>
       </select>
       <button v-if="canCreate" class="erag-btn erag-btn-primary" @click="$emit('add')">
         <svg class="erag-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

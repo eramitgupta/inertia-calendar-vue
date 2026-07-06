@@ -1,7 +1,7 @@
 import type { UseHttpSubmitOptions } from '@inertiajs/core'
 import type { Ref } from 'vue'
 
-export type CalendarView = 'month' | 'week' | 'day' | 'agenda'
+export type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'settings'
 
 export type EventId = string | number
 

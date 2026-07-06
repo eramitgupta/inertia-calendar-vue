@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue'
+import { computed, toRef, ref } from 'vue'
 import { useCalendar } from '../composables/useCalendar'
 import { useCalendarModal } from '../composables/useCalendarModal'
 import { useCalendarMutations } from '../composables/useCalendarMutations'
@@ -13,6 +13,7 @@ import DayView from './DayView.vue'
 import EventModal from './EventModal.vue'
 import MonthView from './MonthView.vue'
 import WeekView from './WeekView.vue'
+import SettingsView from './SettingsView.vue'
 
 const props = withDefaults(defineProps<CalendarProps>(), {
   calendar: undefined,
@@ -34,6 +35,7 @@ const emit = defineEmits<{
   create: [event: CalendarEvent]
   delete: [event: CalendarEvent]
   update: [event: CalendarEvent]
+  'create-task': [task: { title: string; date: string; time: string; allDay: boolean; desc: string }]
 }>()
 
 const {
@@ -74,6 +76,23 @@ const { deleteEvent, saveEvent } = useCalendarMutations({
   shouldPersist,
 })
 
+const modalInitialTab = ref<'event' | 'task'>('event')
+
+const handleNewEvent = (date?: any) => {
+  modalInitialTab.value = 'event'
+  openCreate(date)
+}
+
+const handleNewTask = () => {
+  modalInitialTab.value = 'task'
+  openCreate()
+}
+
+const saveTask = (taskData: any) => {
+  console.log('[calendar UI] task created:', taskData)
+  emit('create-task', taskData)
+}
+
 const slotProps = computed(() => ({
   ...calendarState,
   errors: inertiaEvents.errors,
@@ -82,7 +101,7 @@ const slotProps = computed(() => ({
   deleteEvent,
   modalMode,
   modalOpen,
-  openCreate,
+  openCreate: handleNewEvent,
   openDetail,
   openEdit,
   saveEvent,
@@ -100,7 +119,7 @@ const slotProps = computed(() => ({
       :can-create="permissions.create"
       :title="calendarState.title.value"
       :view="calendarState.currentView.value"
-      @add="openCreate()"
+      @add="handleNewEvent()"
       @next="calendarState.navigate(1)"
       @prev="calendarState.navigate(-1)"
       @search="calendarState.search.value = $event"
@@ -117,7 +136,8 @@ const slotProps = computed(() => ({
         :mini-date="calendarState.miniDate.value"
         :open="calendarState.sidebarOpen.value"
         :visible-calendars="calendarState.visibleCalendars.value"
-        @add="openCreate()"
+        @add="handleNewEvent()"
+        @add-task="handleNewTask()"
         @mini-next="calendarState.miniDate.value = new Date(calendarState.miniDate.value.getFullYear(), calendarState.miniDate.value.getMonth() + 1, 1)"
         @mini-prev="calendarState.miniDate.value = new Date(calendarState.miniDate.value.getFullYear(), calendarState.miniDate.value.getMonth() - 1, 1)"
         @select-date="calendarState.selectDate($event)"
@@ -129,28 +149,31 @@ const slotProps = computed(() => ({
           v-if="calendarState.currentView.value === 'month'"
           :current-date="calendarState.currentDate.value"
           :events="calendarState.filteredEvents.value"
-          @add="openCreate"
+          @add="handleNewEvent"
           @detail="openDetail"
         />
         <WeekView
           v-else-if="calendarState.currentView.value === 'week'"
           :current-date="calendarState.currentDate.value"
           :events="calendarState.filteredEvents.value"
-          @add="openCreate"
+          @add="handleNewEvent"
           @detail="openDetail"
         />
         <DayView
           v-else-if="calendarState.currentView.value === 'day'"
           :current-date="calendarState.currentDate.value"
           :events="calendarState.filteredEvents.value"
-          @add="openCreate"
+          @add="handleNewEvent"
           @detail="openDetail"
         />
         <AgendaView
-          v-else
+          v-else-if="calendarState.currentView.value === 'agenda'"
           :current-date="calendarState.currentDate.value"
           :events="calendarState.filteredEvents.value"
           @detail="openDetail"
+        />
+        <SettingsView
+          v-else
         />
       </main>
     </div>
@@ -162,6 +185,7 @@ const slotProps = computed(() => ({
       :mention-users-allowed="config.mention_users !== false"
       :mode="modalMode"
       :open="modalOpen"
+      :initial-tab="modalInitialTab"
       :permissions="permissions"
       :processing="inertiaEvents.processing.value"
       :selected-date="selectedDate"
@@ -169,6 +193,7 @@ const slotProps = computed(() => ({
       @delete="deleteEvent"
       @edit="openEdit"
       @save="saveEvent"
+      @save-task="saveTask"
     />
   </div>
 </template>
