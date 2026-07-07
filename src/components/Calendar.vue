@@ -43,17 +43,13 @@ const emit = defineEmits<{
   create: [event: CalendarEvent]
   delete: [event: CalendarEvent]
   update: [event: CalendarEvent]
-  'create-task': [task: { title: string; date: string; time: string; allDay: boolean; desc: string }]
+  'create-task': [
+    task: { title: string; date: string; time: string; allDay: boolean; desc: string },
+  ]
 }>()
 
-const {
-  calendarOptions,
-  config,
-  mentionUsers,
-  permissions,
-  routes,
-  shouldPersist,
-} = useCalendarResource(props)
+const { calendarOptions, config, mentionUsers, permissions, routes, shouldPersist } =
+  useCalendarResource(props)
 
 const calendarState = useCalendar(toRef(() => calendarOptions.value))
 const inertiaEvents = useInertiaCalendarEvents(routes.value, props.visitOptions)
@@ -222,7 +218,10 @@ const buildColorVariables = (colors: CalendarColors): Record<string, string> => 
     }
   }
 
-  for (const [key, variable] of Object.entries(colorVariableMap) as [Exclude<keyof CalendarColors, 'variables'>, `--${string}`][]) {
+  for (const [key, variable] of Object.entries(colorVariableMap) as [
+    Exclude<keyof CalendarColors, 'variables'>,
+    `--${string}`,
+  ][]) {
     const value = colors[key]
 
     if (typeof value === 'string' && value.trim()) {
@@ -268,8 +267,20 @@ const rootStyle = computed(() => {
         :visible-calendars="calendarState.visibleCalendars.value"
         @add="handleNewEvent()"
         @add-task="handleNewTask()"
-        @mini-next="calendarState.miniDate.value = new Date(calendarState.miniDate.value.getFullYear(), calendarState.miniDate.value.getMonth() + 1, 1)"
-        @mini-prev="calendarState.miniDate.value = new Date(calendarState.miniDate.value.getFullYear(), calendarState.miniDate.value.getMonth() - 1, 1)"
+        @mini-next="
+          calendarState.miniDate.value = new Date(
+            calendarState.miniDate.value.getFullYear(),
+            calendarState.miniDate.value.getMonth() + 1,
+            1,
+          )
+        "
+        @mini-prev="
+          calendarState.miniDate.value = new Date(
+            calendarState.miniDate.value.getFullYear(),
+            calendarState.miniDate.value.getMonth() - 1,
+            1,
+          )
+        "
         @select-date="calendarState.selectDate($event)"
         @toggle-calendar="calendarState.toggleCalendar($event)"
       />
@@ -302,9 +313,7 @@ const rootStyle = computed(() => {
           :events="calendarState.filteredEvents.value"
           @detail="openDetail"
         />
-        <SettingsView
-          v-else
-        />
+        <SettingsView v-else />
       </main>
     </div>
 

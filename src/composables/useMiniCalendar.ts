@@ -13,7 +13,9 @@ interface MiniCalendarDay {
 const pad = (value: number): string => String(value).padStart(2, '0')
 
 export function useMiniCalendar(currentDate: () => Date, miniDate: () => Date) {
-  const miniTitle = computed(() => `${months[miniDate().getMonth()].slice(0, 3)} ${miniDate().getFullYear()}`)
+  const miniTitle = computed(
+    () => `${months[miniDate().getMonth()].slice(0, 3)} ${miniDate().getFullYear()}`,
+  )
 
   const miniDays = computed(() => {
     const year = miniDate().getFullYear()

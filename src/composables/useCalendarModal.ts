@@ -1,9 +1,13 @@
-import { ref  } from 'vue'
-import type {Ref} from 'vue';
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 import type { CalendarEvent, ModalMode } from '../types'
 import { dateToString } from './useCalendar'
 
-export function useCalendarModal(currentDate: Ref<Date>, canCreate: () => boolean, canUpdate: () => boolean) {
+export function useCalendarModal(
+  currentDate: Ref<Date>,
+  canCreate: () => boolean,
+  canUpdate: () => boolean,
+) {
   const modalOpen = ref(false)
   const modalMode = ref<ModalMode>('create')
   const selectedDate = ref('')

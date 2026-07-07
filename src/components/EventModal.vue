@@ -7,33 +7,44 @@ import { useEventForm } from '../composables/useEventForm'
 import { useEventTaskForm } from '../composables/useEventTaskForm'
 import { useMentionUsers } from '../composables/useMentionUsers'
 import { swatchColors } from '../constants'
-import type { CalendarDefinition, CalendarEvent, CalendarTaskPayload, EventModalTab, CalendarPermissions, MentionUser, ModalMode } from '../types'
+import type {
+  CalendarDefinition,
+  CalendarEvent,
+  CalendarTaskPayload,
+  EventModalTab,
+  CalendarPermissions,
+  MentionUser,
+  ModalMode,
+} from '../types'
 import DatePicker from './DatePicker.vue'
 import Select from './Select.vue'
 import TimePicker from './TimePicker.vue'
 
-const props = withDefaults(defineProps<{
-  calendars: CalendarDefinition[]
-  event?: CalendarEvent | null
-  mentionUsers?: MentionUser[]
-  mentionUsersAllowed?: boolean
-  mode?: ModalMode
-  open?: boolean
-  permissions?: CalendarPermissions
-  processing?: boolean
-  selectedDate?: string
-  initialTab?: EventModalTab
-}>(), {
-  event: null,
-  mentionUsersAllowed: true,
-  mentionUsers: () => [],
-  mode: 'create',
-  open: false,
-  permissions: () => ({ create: true, update: true, delete: true }),
-  processing: false,
-  selectedDate: '',
-  initialTab: 'event',
-})
+const props = withDefaults(
+  defineProps<{
+    calendars: CalendarDefinition[]
+    event?: CalendarEvent | null
+    mentionUsers?: MentionUser[]
+    mentionUsersAllowed?: boolean
+    mode?: ModalMode
+    open?: boolean
+    permissions?: CalendarPermissions
+    processing?: boolean
+    selectedDate?: string
+    initialTab?: EventModalTab
+  }>(),
+  {
+    event: null,
+    mentionUsersAllowed: true,
+    mentionUsers: () => [],
+    mode: 'create',
+    open: false,
+    permissions: () => ({ create: true, update: true, delete: true }),
+    processing: false,
+    selectedDate: '',
+    initialTab: 'event',
+  },
+)
 
 const emit = defineEmits<{
   close: []
@@ -90,7 +101,9 @@ const resolvedPermissions = computed<Required<CalendarPermissions>>(() => ({
   ...props.permissions,
 }))
 
-const detailMentionedUsersLabel = computed(() => props.event ? mentionedUsersLabel(resolvedMentionUsers.value, props.event) : '')
+const detailMentionedUsersLabel = computed(() =>
+  props.event ? mentionedUsersLabel(resolvedMentionUsers.value, props.event) : '',
+)
 
 const close = (): void => {
   emit('close')
@@ -106,7 +119,15 @@ const close = (): void => {
         <div class="erag-modal-hdr">
           <span class="erag-modal-title">{{ event.title }}</span>
           <button class="erag-modal-close" title="Close" @click="close">
-            <svg class="erag-modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              class="erag-modal-close-svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M18 6 6 18"></path>
               <path d="m6 6 12 12"></path>
             </svg>
@@ -145,7 +166,9 @@ const close = (): void => {
         <div class="erag-detail-row">
           <span class="erag-detail-icon" title="Calendar">
             <svg viewBox="0 0 24 24">
-              <path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z"></path>
+              <path
+                d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z"
+              ></path>
               <path d="m7 7-.01.01"></path>
             </svg>
           </span>
@@ -163,21 +186,43 @@ const close = (): void => {
           <span>{{ detailMentionedUsersLabel }}</span>
         </div>
         <div class="erag-modal-footer">
-          <button v-if="resolvedPermissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', event)">Delete</button>
+          <button
+            v-if="resolvedPermissions.delete"
+            class="erag-btn erag-btn-danger"
+            :disabled="processing"
+            @click="$emit('delete', event)"
+          >
+            Delete
+          </button>
           <button class="erag-btn" @click="close">Close</button>
-          <button v-if="resolvedPermissions.update" class="erag-btn erag-btn-primary" :disabled="processing" @click="$emit('edit', event)">Edit</button>
+          <button
+            v-if="resolvedPermissions.update"
+            class="erag-btn erag-btn-primary"
+            :disabled="processing"
+            @click="$emit('edit', event)"
+          >
+            Edit
+          </button>
         </div>
       </template>
 
       <!-- Edit/Create Form Mode -->
       <template v-else>
         <!-- Modal Header -->
-        <div class="erag-modal-hdr" style="margin-bottom: 8px;">
+        <div class="erag-modal-hdr" style="margin-bottom: 8px">
           <span class="erag-modal-title">
             {{ modalTitle }}
           </span>
           <button class="erag-modal-close" title="Cancel" @click="close">
-            <svg class="erag-modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              class="erag-modal-close-svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M18 6 6 18"></path>
               <path d="m6 6 12 12"></path>
             </svg>
@@ -207,7 +252,12 @@ const close = (): void => {
         <!-- EVENT FORM CONTENT -->
         <template v-if="task.activeTab === 'event'">
           <div class="erag-form-group erag-title-row">
-            <input v-model="form.title" class="erag-title-input" placeholder="Add title" autofocus>
+            <input
+              v-model="form.title"
+              class="erag-title-input"
+              placeholder="Add title"
+              autofocus
+            />
           </div>
 
           <div class="erag-field-row">
@@ -218,7 +268,7 @@ const close = (): void => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <div class="erag-form-group erag-form-row" style="margin-bottom: 0;">
+              <div class="erag-form-group erag-form-row" style="margin-bottom: 0">
                 <div>
                   <label class="erag-form-label">Date</label>
                   <DatePicker v-model="form.date" />
@@ -234,19 +284,27 @@ const close = (): void => {
                   </div>
                 </div>
               </div>
-              <div v-if="timeError" class="erag-form-error" style="margin-top: 8px;">{{ timeError }}</div>
+              <div v-if="timeError" class="erag-form-error" style="margin-top: 8px">
+                {{ timeError }}
+              </div>
             </div>
           </div>
 
           <div class="erag-field-row">
             <div class="erag-field-icon" title="Calendar">
               <svg viewBox="0 0 24 24">
-                <path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z"></path>
+                <path
+                  d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z"
+                ></path>
                 <path d="m7 7-.01.01"></path>
               </svg>
             </div>
             <div class="erag-field-content">
-              <Select v-model="form.cal" :options="calendars.map((c) => ({ label: c.label, value: c.id }))" placeholder="Select calendar" />
+              <Select
+                v-model="form.cal"
+                :options="calendars.map((c) => ({ label: c.label, value: c.id }))"
+                placeholder="Select calendar"
+              />
             </div>
           </div>
 
@@ -260,10 +318,27 @@ const close = (): void => {
             <div class="erag-field-content">
               <div class="erag-mention-select" @focusout="mentionListOpen = false">
                 <div class="erag-mention-control" @click="focusMentionSearch">
-                  <span v-for="user in selectedMentionUsers" :key="user.user_id" class="erag-mention-chip">
+                  <span
+                    v-for="user in selectedMentionUsers"
+                    :key="user.user_id"
+                    class="erag-mention-chip"
+                  >
                     {{ user.name }}
-                    <button type="button" class="erag-mention-remove" title="Remove" @mousedown.stop.prevent="removeMentionUser(user.user_id)">
-                      <svg class="erag-mention-remove-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <button
+                      type="button"
+                      class="erag-mention-remove"
+                      title="Remove"
+                      @mousedown.stop.prevent="removeMentionUser(user.user_id)"
+                    >
+                      <svg
+                        class="erag-mention-remove-svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
                         <path d="M18 6 6 18"></path>
                         <path d="m6 6 12 12"></path>
                       </svg>
@@ -276,7 +351,7 @@ const close = (): void => {
                     placeholder="Search users..."
                     @focus="mentionListOpen = true"
                     @keydown.esc="mentionListOpen = false"
-                  >
+                  />
                 </div>
                 <div v-if="mentionListOpen" class="erag-mention-menu">
                   <div v-if="availableMentionUsers.length" class="erag-mention-results">
@@ -290,7 +365,9 @@ const close = (): void => {
                       {{ user.name }}
                     </button>
                   </div>
-                  <div v-if="!availableMentionUsers.length" class="erag-mention-empty">No users found</div>
+                  <div v-if="!availableMentionUsers.length" class="erag-mention-empty">
+                    No users found
+                  </div>
                 </div>
               </div>
             </div>
@@ -298,7 +375,14 @@ const close = (): void => {
 
           <div class="erag-field-row">
             <div class="erag-field-icon" title="Color">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <circle cx="12" cy="12" r="10"></circle>
                 <circle cx="12" cy="12" r="4"></circle>
                 <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
@@ -317,14 +401,19 @@ const close = (): void => {
               </div>
               <div class="erag-custom-color-row">
                 <span class="erag-custom-color-preview" :style="{ background: form.color }"></span>
-                <input v-model="form.color" class="erag-custom-color-picker" type="color" aria-label="Pick custom color">
+                <input
+                  v-model="form.color"
+                  class="erag-custom-color-picker"
+                  type="color"
+                  aria-label="Pick custom color"
+                />
                 <input
                   :value="form.color"
                   class="erag-custom-color-input"
                   maxlength="7"
                   placeholder="#378ADD"
                   @input="setCustomColor(($event.target as HTMLInputElement).value)"
-                >
+                />
               </div>
             </div>
           </div>
@@ -338,21 +427,45 @@ const close = (): void => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <textarea v-model="form.desc" rows="3" class="erag-form-input" placeholder="Add notes..."></textarea>
+              <textarea
+                v-model="form.desc"
+                rows="3"
+                class="erag-form-input"
+                placeholder="Add notes..."
+              ></textarea>
             </div>
           </div>
 
           <div class="erag-modal-footer">
-            <button v-if="form.id && resolvedPermissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', { ...form })">Delete</button>
+            <button
+              v-if="form.id && resolvedPermissions.delete"
+              class="erag-btn erag-btn-danger"
+              :disabled="processing"
+              @click="$emit('delete', { ...form })"
+            >
+              Delete
+            </button>
             <button class="erag-btn" @click="close">Cancel</button>
-            <button v-if="form.id ? resolvedPermissions.update : resolvedPermissions.create" class="erag-btn erag-btn-primary" :disabled="processing" @click="save">{{ form.id ? 'Update' : 'Save' }}</button>
+            <button
+              v-if="form.id ? resolvedPermissions.update : resolvedPermissions.create"
+              class="erag-btn erag-btn-primary"
+              :disabled="processing"
+              @click="save"
+            >
+              {{ form.id ? 'Update' : 'Save' }}
+            </button>
           </div>
         </template>
 
         <!-- TASK FORM CONTENT -->
         <template v-else>
           <div class="erag-form-group erag-title-row">
-            <input v-model="task.title" class="erag-title-input" placeholder="Add title" autofocus>
+            <input
+              v-model="task.title"
+              class="erag-title-input"
+              placeholder="Add title"
+              autofocus
+            />
           </div>
 
           <!-- Date Selector Row -->
@@ -366,11 +479,15 @@ const close = (): void => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
                 <DatePicker v-model="task.date" class="erag-task-date-picker" />
 
                 <!-- Time Selector -->
-                <TimePicker v-if="task.timeEnabled" v-model="task.time" class="erag-task-time-picker" />
+                <TimePicker
+                  v-if="task.timeEnabled"
+                  v-model="task.time"
+                  class="erag-task-time-picker"
+                />
                 <button v-else type="button" class="erag-add-time-btn" @click="enableTime">
                   Add time
                 </button>
@@ -381,14 +498,28 @@ const close = (): void => {
           <!-- Add deadline checkmark decorative row -->
           <div class="erag-field-row">
             <div class="erag-field-icon" title="Add deadline">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <circle cx="12" cy="12" r="10"></circle>
                 <circle cx="12" cy="12" r="6"></circle>
                 <circle cx="12" cy="12" r="2"></circle>
               </svg>
             </div>
-            <div class="erag-field-content" style="display: flex; align-items: center; height: 36px;">
-              <span style="color: var(--text-muted); font-size: 13.5px; cursor: pointer;" @click="enableTime">Add deadline</span>
+            <div
+              class="erag-field-content"
+              style="display: flex; align-items: center; height: 36px"
+            >
+              <span
+                style="color: var(--text-muted); font-size: 13.5px; cursor: pointer"
+                @click="enableTime"
+                >Add deadline</span
+              >
             </div>
           </div>
 
@@ -402,14 +533,26 @@ const close = (): void => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <textarea v-model="task.desc" rows="3" class="erag-form-input" placeholder="Add description or a Google Drive attachment"></textarea>
+              <textarea
+                v-model="task.desc"
+                rows="3"
+                class="erag-form-input"
+                placeholder="Add description or a Google Drive attachment"
+              ></textarea>
             </div>
           </div>
 
           <!-- Task List selector dropdown row -->
           <div class="erag-field-row">
             <div class="erag-field-icon" title="Task List">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <line x1="8" y1="6" x2="21" y2="6"></line>
                 <line x1="8" y1="12" x2="21" y2="12"></line>
                 <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -433,7 +576,13 @@ const close = (): void => {
 
           <div class="erag-modal-footer">
             <button class="erag-btn" @click="close">Cancel</button>
-            <button class="erag-btn erag-btn-primary" :disabled="!task.title.trim()" @click="saveTask">Save</button>
+            <button
+              class="erag-btn erag-btn-primary"
+              :disabled="!task.title.trim()"
+              @click="saveTask"
+            >
+              Save
+            </button>
           </div>
         </template>
       </template>

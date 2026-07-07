@@ -3,11 +3,14 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const model = defineModel<string>({ default: '09:00' })
 
-const props = withDefaults(defineProps<{
-  placeholder?: string
-}>(), {
-  placeholder: 'Select time',
-})
+const props = withDefaults(
+  defineProps<{
+    placeholder?: string
+  }>(),
+  {
+    placeholder: 'Select time',
+  },
+)
 
 const open = ref(false)
 const wrapperRef = ref<HTMLElement | null>(null)
@@ -22,7 +25,9 @@ const selected = ref({
   period: 'AM',
 })
 
-const displayValue = computed(() => `${selected.value.hour}:${selected.value.minute} ${selected.value.period}`)
+const displayValue = computed(
+  () => `${selected.value.hour}:${selected.value.minute} ${selected.value.period}`,
+)
 
 const syncSelectedFromModel = (): void => {
   const [hourValue = '09', minuteValue = '00'] = String(model.value || '09:00').split(':')

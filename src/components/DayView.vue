@@ -14,7 +14,10 @@ defineEmits<{
   detail: [event: CalendarEvent]
 }>()
 
-const { date, dayEvents, eventStyle, hours, nowTop, today } = useDaySchedule(() => props.currentDate, () => props.events)
+const { date, dayEvents, eventStyle, hours, nowTop, today } = useDaySchedule(
+  () => props.currentDate,
+  () => props.events,
+)
 </script>
 
 <template>
@@ -23,7 +26,9 @@ const { date, dayEvents, eventStyle, hours, nowTop, today } = useDaySchedule(() 
     <div class="erag-day-scroll">
       <div class="erag-time-col">
         <div v-for="hour in hours" :key="hour" class="erag-time-slot">
-          <span class="erag-time-label">{{ hour === 0 ? '' : formatTime(`${String(hour).padStart(2, '0')}:00`) }}</span>
+          <span class="erag-time-label">{{
+            hour === 0 ? '' : formatTime(`${String(hour).padStart(2, '0')}:00`)
+          }}</span>
         </div>
       </div>
       <div class="erag-dcol">

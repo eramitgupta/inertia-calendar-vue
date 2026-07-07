@@ -8,12 +8,15 @@ export interface SelectOption {
 
 const model = defineModel<string | number>({ default: '' })
 
-const props = withDefaults(defineProps<{
-  options: SelectOption[]
-  placeholder?: string
-}>(), {
-  placeholder: 'Select...',
-})
+const props = withDefaults(
+  defineProps<{
+    options: SelectOption[]
+    placeholder?: string
+  }>(),
+  {
+    placeholder: 'Select...',
+  },
+)
 
 const open = ref(false)
 const wrapperRef = ref<HTMLElement | null>(null)
@@ -47,9 +50,22 @@ onUnmounted(() => {
 <template>
   <div ref="wrapperRef" class="erag-custom-select">
     <button type="button" class="erag-form-input erag-select-trigger" @click="open = !open">
-      <span :class="{ 'erag-select-placeholder': !selectedLabel }">{{ selectedLabel || props.placeholder }}</span>
-      <span class="erag-select-chevron" :class="{ 'erag-select-chevron-open': open }" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <span :class="{ 'erag-select-placeholder': !selectedLabel }">{{
+        selectedLabel || props.placeholder
+      }}</span>
+      <span
+        class="erag-select-chevron"
+        :class="{ 'erag-select-chevron-open': open }"
+        aria-hidden="true"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </span>

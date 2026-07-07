@@ -3,11 +3,14 @@ import { computed, ref, watch } from 'vue'
 import { dateToString, parseDate } from '../composables/useCalendar'
 import { shortDays, months } from '../constants'
 
-const props = withDefaults(defineProps<{
-  modelValue?: string
-}>(), {
-  modelValue: '',
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string
+  }>(),
+  {
+    modelValue: '',
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -28,7 +31,9 @@ const selectedLabel = computed(() => {
   return `${months[date.getMonth()].slice(0, 3)} ${date.getDate()}, ${date.getFullYear()}`
 })
 
-const pickerTitle = computed(() => `${months[visibleDate.value.getMonth()]} ${visibleDate.value.getFullYear()}`)
+const pickerTitle = computed(
+  () => `${months[visibleDate.value.getMonth()]} ${visibleDate.value.getFullYear()}`,
+)
 
 const calendarDays = computed(() => {
   const year = visibleDate.value.getFullYear()
@@ -55,7 +60,11 @@ const calendarDays = computed(() => {
 })
 
 const navigate = (direction: number): void => {
-  visibleDate.value = new Date(visibleDate.value.getFullYear(), visibleDate.value.getMonth() + direction, 1)
+  visibleDate.value = new Date(
+    visibleDate.value.getFullYear(),
+    visibleDate.value.getMonth() + direction,
+    1,
+  )
 }
 
 const selectDate = (value: string): void => {
@@ -83,9 +92,13 @@ watch(
 
     <div v-if="open" class="erag-date-menu" @mousedown.prevent>
       <div class="erag-date-menu-head">
-        <button type="button" class="erag-date-nav" title="Previous month" @click="navigate(-1)">&lt;</button>
+        <button type="button" class="erag-date-nav" title="Previous month" @click="navigate(-1)">
+          &lt;
+        </button>
         <span class="erag-date-title">{{ pickerTitle }}</span>
-        <button type="button" class="erag-date-nav" title="Next month" @click="navigate(1)">&gt;</button>
+        <button type="button" class="erag-date-nav" title="Next month" @click="navigate(1)">
+          &gt;
+        </button>
       </div>
 
       <div class="erag-date-grid erag-date-weekdays">
@@ -98,7 +111,11 @@ watch(
           :key="day.value"
           type="button"
           class="erag-date-day"
-          :class="{ 'erag-other': day.other, 'erag-selected': day.selected, 'erag-today': day.today }"
+          :class="{
+            'erag-other': day.other,
+            'erag-selected': day.selected,
+            'erag-today': day.today,
+          }"
           @click="selectDate(day.value)"
         >
           {{ day.label }}

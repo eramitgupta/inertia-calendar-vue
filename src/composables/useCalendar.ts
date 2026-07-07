@@ -5,7 +5,8 @@ import type { CalendarEvent, CalendarOptions, CalendarState, CalendarView } from
 
 const pad = (value: number): string => String(value).padStart(2, '0')
 
-export const dateToString = (date: Date): string => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+export const dateToString = (date: Date): string =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 
 export const parseDate = (value: Date | string): Date => {
   if (value instanceof Date) {
@@ -55,9 +56,11 @@ export const normalizeTime = (time: string): string => {
   return `${pad(hours)}:${pad(minutes)}`
 }
 
-export const formatLongDate = (date: Date): string => `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+export const formatLongDate = (date: Date): string =>
+  `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
 
-export const formatMonthYear = (date: Date): string => `${months[date.getMonth()]} ${date.getFullYear()}`
+export const formatMonthYear = (date: Date): string =>
+  `${months[date.getMonth()]} ${date.getFullYear()}`
 
 export const formatWeekRange = (date: Date): string => {
   const start = new Date(date)
@@ -76,7 +79,11 @@ export const formatWeekRange = (date: Date): string => {
 export function useCalendar(options: CalendarOptions | Ref<CalendarOptions> = {}): CalendarState {
   const resolvedOptions = computed(() => ('value' in options ? options.value : options))
   const now = new Date()
-  const currentDate = ref(resolvedOptions.value.initialDate ? parseDate(resolvedOptions.value.initialDate) : new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+  const currentDate = ref(
+    resolvedOptions.value.initialDate
+      ? parseDate(resolvedOptions.value.initialDate)
+      : new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+  )
   const miniDate = ref(new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), 1))
   const currentView = ref<CalendarView>(resolvedOptions.value.initialView || 'month')
   const sidebarOpen = ref(resolvedOptions.value.sidebarOpen ?? true)
@@ -129,15 +136,18 @@ export function useCalendar(options: CalendarOptions | Ref<CalendarOptions> = {}
     return 'Agenda'
   })
 
-  const filteredEvents = computed(() => events.value.filter((event) => {
-    if (!visibleCalendars.value.has(event.cal)) {
-      return false
-    }
+  const filteredEvents = computed(() =>
+    events.value.filter((event) => {
+      if (!visibleCalendars.value.has(event.cal)) {
+        return false
+      }
 
-    return !search.value || event.title.toLowerCase().includes(search.value.toLowerCase())
-  }))
+      return !search.value || event.title.toLowerCase().includes(search.value.toLowerCase())
+    }),
+  )
 
-  const nextId = (): number => Math.max(0, ...events.value.map((event) => Number(event.id)).filter(Number.isFinite)) + 1
+  const nextId = (): number =>
+    Math.max(0, ...events.value.map((event) => Number(event.id)).filter(Number.isFinite)) + 1
 
   const navigate = (direction: number): void => {
     const date = new Date(currentDate.value)
@@ -183,7 +193,9 @@ export function useCalendar(options: CalendarOptions | Ref<CalendarOptions> = {}
 
   const saveEvent = (event: CalendarEvent): CalendarEvent => {
     if (event.id) {
-      events.value = events.value.map((item) => String(item.id) === String(event.id) ? event : item)
+      events.value = events.value.map((item) =>
+        String(item.id) === String(event.id) ? event : item,
+      )
 
       return event
     }

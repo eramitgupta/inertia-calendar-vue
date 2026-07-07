@@ -19,9 +19,17 @@ interface CalendarMutationOptions {
   shouldPersist: ComputedRef<boolean>
 }
 
-export function useCalendarMutations({ calendar, canDelete, closeModal, emit, inertiaEvents, shouldPersist }: CalendarMutationOptions) {
+export function useCalendarMutations({
+  calendar,
+  canDelete,
+  closeModal,
+  emit,
+  inertiaEvents,
+  shouldPersist,
+}: CalendarMutationOptions) {
   const appendCreatedEvent = (event: CalendarEvent): CalendarEvent => {
-    const exists = event.id && calendar.events.value.some((item) => String(item.id) === String(event.id))
+    const exists =
+      event.id && calendar.events.value.some((item) => String(item.id) === String(event.id))
 
     if (exists) {
       return calendar.saveEvent(event)

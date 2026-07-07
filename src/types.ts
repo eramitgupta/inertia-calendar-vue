@@ -88,7 +88,10 @@ export interface CalendarMutationResponse {
   [key: string]: unknown
 }
 
-export type CalendarHttpOptions = UseHttpSubmitOptions<CalendarMutationResponse, Record<string, any>>
+export type CalendarHttpOptions = UseHttpSubmitOptions<
+  CalendarMutationResponse,
+  Record<string, any>
+>
 
 export interface CalendarPermissions {
   create?: boolean

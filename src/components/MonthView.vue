@@ -15,7 +15,10 @@ defineEmits<{
   detail: [event: CalendarEvent]
 }>()
 
-const { cells } = useMonthGrid(() => props.currentDate, () => props.events)
+const { cells } = useMonthGrid(
+  () => props.currentDate,
+  () => props.events,
+)
 </script>
 
 <template>
@@ -41,7 +44,9 @@ const { cells } = useMonthGrid(() => props.currentDate, () => props.events)
         >
           {{ event.start !== '00:00' ? `${formatTime(event.start)} ` : '' }}{{ event.title }}
         </div>
-        <div v-if="cell.events.length > 3" class="erag-more">+{{ cell.events.length - 3 }} more</div>
+        <div v-if="cell.events.length > 3" class="erag-more">
+          +{{ cell.events.length - 3 }} more
+        </div>
       </div>
     </div>
   </div>

@@ -8,7 +8,9 @@ export function useMentionUsers(form: CalendarEvent, mentionUsers: () => Mention
 
   const mentionedUserIds = computed(() => form.mentioned_user_ids || [])
 
-  const selectedMentionUsers = computed(() => mentionUsers().filter((user) => mentionedUserIds.value.includes(user.user_id)))
+  const selectedMentionUsers = computed(() =>
+    mentionUsers().filter((user) => mentionedUserIds.value.includes(user.user_id)),
+  )
 
   const availableMentionUsers = computed(() => {
     const search = mentionSearch.value.trim().toLowerCase()
@@ -32,7 +34,9 @@ export function useMentionUsers(form: CalendarEvent, mentionUsers: () => Mention
   }
 
   const removeMentionUser = (userId: number): void => {
-    form.mentioned_user_ids = (form.mentioned_user_ids || []).filter((mentionedUserId) => mentionedUserId !== userId)
+    form.mentioned_user_ids = (form.mentioned_user_ids || []).filter(
+      (mentionedUserId) => mentionedUserId !== userId,
+    )
   }
 
   const focusMentionSearch = async (): Promise<void> => {

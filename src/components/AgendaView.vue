@@ -13,7 +13,10 @@ defineEmits<{
   detail: [event: CalendarEvent]
 }>()
 
-const { groupedEvents } = useAgendaGroups(() => props.currentDate, () => props.events)
+const { groupedEvents } = useAgendaGroups(
+  () => props.currentDate,
+  () => props.events,
+)
 </script>
 
 <template>
