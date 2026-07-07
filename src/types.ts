@@ -1,5 +1,5 @@
 import type { UseHttpSubmitOptions } from '@inertiajs/core'
-import type { Ref } from 'vue'
+import type { HTMLAttributes, Ref } from 'vue'
 
 export type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'settings'
 
@@ -27,6 +27,17 @@ export interface CalendarEvent {
   desc?: string
   mentioned_user_ids?: number[]
   [key: string]: unknown
+}
+
+export type EventModalTab = 'event' | 'task'
+
+export interface CalendarTaskPayload {
+  allDay: boolean
+  date: string
+  desc: string
+  list: string
+  time: string
+  title: string
 }
 
 export interface CalendarOptions {
@@ -63,7 +74,7 @@ export interface CalendarState {
 
 export type RouteResolver = string | null | ((event?: CalendarEvent) => string | null)
 
-export interface InertiaCalendarRoutes {
+export interface CalendarRoutes {
   create?: RouteResolver
   store?: RouteResolver
   update?: RouteResolver
@@ -71,47 +82,90 @@ export interface InertiaCalendarRoutes {
   destroy?: RouteResolver
 }
 
-export interface InertiaCalendarMutationResponse {
+export interface CalendarMutationResponse {
   event?: CalendarEvent
   deleted?: boolean
   [key: string]: unknown
 }
 
-export type InertiaCalendarHttpOptions = UseHttpSubmitOptions<InertiaCalendarMutationResponse, Record<string, any>>
+export type CalendarHttpOptions = UseHttpSubmitOptions<CalendarMutationResponse, Record<string, any>>
 
-export interface InertiaCalendarPermissions {
+export interface CalendarPermissions {
   create?: boolean
   update?: boolean
   delete?: boolean
 }
 
-export interface InertiaCalendarConfig {
+export interface CalendarColors {
+  background?: string
+  border?: string
+  danger?: string
+  dangerHover?: string
+  dangerLight?: string
+  hoverBackground?: string
+  modalBackground?: string
+  modalBorder?: string
+  overlay?: string
+  primary?: string
+  primaryAccent?: string
+  primaryHover?: string
+  primaryLight?: string
+  primaryShadow?: string
+  primarySoft?: string
+  primarySoftHover?: string
+  controlAccent?: string
+  controlBackground?: string
+  controlBorder?: string
+  controlFocus?: string
+  controlShadow?: string
+  sidebarBackground?: string
+  softBackground?: string
+  surfaceMuted?: string
+  surfaceMutedHover?: string
+  swatchBorder?: string
+  task?: string
+  taskHover?: string
+  taskShadow?: string
+  textMuted?: string
+  textPrimary?: string
+  textSecondary?: string
+  toolbarBackground?: string
+  variables?: Record<`--${string}`, string>
+}
+
+export interface CalendarConfig extends Partial<CalendarOptions> {
   sidebar?: boolean
-  color?: string
   week_start?: string
   timezone?: string
   mention_users?: boolean
+  mentionUsers?: MentionUser[]
+  permissions?: CalendarPermissions
+  persistWithInertia?: boolean
+  routes?: CalendarRoutes
   [key: string]: unknown
 }
 
-export interface InertiaCalendarResource {
+export interface CalendarResource {
   data?: CalendarOptions
-  config?: InertiaCalendarConfig
+  config?: CalendarConfig
   mentionUsers?: MentionUser[]
-  routes?: InertiaCalendarRoutes
-  permissions?: InertiaCalendarPermissions
+  routes?: CalendarRoutes
+  permissions?: CalendarPermissions
   casts?: Record<string, string>
 }
 
-export type InertiaCalendarPayload = InertiaCalendarResource
+export type CalendarPayload = CalendarResource
 
 export interface CalendarProps extends CalendarOptions {
-  resource?: InertiaCalendarResource
-  calendar?: InertiaCalendarPayload
-  config?: InertiaCalendarConfig
-  permissions?: InertiaCalendarPermissions
-  routes?: InertiaCalendarRoutes
-  visitOptions?: InertiaCalendarHttpOptions
+  resource?: CalendarResource
+  calendar?: CalendarPayload
+  class?: HTMLAttributes['class']
+  config?: CalendarConfig
+  configColors?: CalendarColors
+  permissions?: CalendarPermissions
+  routes?: CalendarRoutes
+  style?: HTMLAttributes['style']
+  visitOptions?: CalendarHttpOptions
   headless?: boolean
   mentionUsers?: MentionUser[]
   persistWithInertia?: boolean

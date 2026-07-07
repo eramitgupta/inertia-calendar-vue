@@ -1,31 +1,39 @@
 <script setup lang="ts">
-import { computed, toRef, ref } from 'vue'
+import { computed, toRef, ref, useAttrs, watch } from 'vue'
+import type { CSSProperties } from 'vue'
 import { useCalendar } from '../composables/useCalendar'
 import { useCalendarModal } from '../composables/useCalendarModal'
 import { useCalendarMutations } from '../composables/useCalendarMutations'
 import { useCalendarResource } from '../composables/useCalendarResource'
 import { useInertiaCalendarEvents } from '../composables/useInertiaCalendarEvents'
-import type { CalendarEvent, CalendarProps } from '../types'
+import type { CalendarColors, CalendarEvent, CalendarProps } from '../types'
 import AgendaView from './AgendaView.vue'
 import CalendarSidebar from './CalendarSidebar.vue'
 import CalendarToolbar from './CalendarToolbar.vue'
 import DayView from './DayView.vue'
 import EventModal from './EventModal.vue'
 import MonthView from './MonthView.vue'
-import WeekView from './WeekView.vue'
 import SettingsView from './SettingsView.vue'
+import WeekView from './WeekView.vue'
+
+defineOptions({
+  inheritAttrs: false,
+})
+
+const attrs = useAttrs()
 
 const props = withDefaults(defineProps<CalendarProps>(), {
   calendar: undefined,
   calendars: undefined,
   config: () => ({}),
+  configColors: () => ({}),
   events: undefined,
   headless: false,
   initialDate: undefined,
-  initialView: 'month',
-  mentionUsers: () => [],
-  permissions: () => ({ create: true, update: true, delete: true }),
-  persistWithInertia: false,
+  initialView: undefined,
+  mentionUsers: undefined,
+  permissions: undefined,
+  persistWithInertia: undefined,
   resource: undefined,
   routes: () => ({}),
   visitOptions: () => ({}),
@@ -49,6 +57,21 @@ const {
 
 const calendarState = useCalendar(toRef(() => calendarOptions.value))
 const inertiaEvents = useInertiaCalendarEvents(routes.value, props.visitOptions)
+
+watch(
+  () => config.value.sidebar,
+  (sidebar) => {
+    if (sidebar === true) {
+      calendarState.sidebarOpen.value = true
+    }
+
+    if (sidebar === false) {
+      calendarState.sidebarOpen.value = false
+    }
+  },
+  { immediate: true },
+)
+
 const {
   closeModal,
   modalMode,
@@ -108,12 +131,119 @@ const slotProps = computed(() => ({
   selectedDate,
   selectedEvent,
 }))
+
+const hexToRgba = (color: string, opacity: number): string | null => {
+  const match = color.trim().match(/^#?([0-9a-f]{6})$/i)
+
+  if (!match) {
+    return null
+  }
+
+  const value = match[1]
+  const red = Number.parseInt(value.slice(0, 2), 16)
+  const green = Number.parseInt(value.slice(2, 4), 16)
+  const blue = Number.parseInt(value.slice(4, 6), 16)
+
+  return `rgba(${red}, ${green}, ${blue}, ${opacity})`
+}
+
+const rootAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+
+  return rest
+})
+
+const rootClass = computed(() => ['erag-cal-root', attrs.class, props.class])
+
+const colorVariableMap: Record<Exclude<keyof CalendarColors, 'variables'>, `--${string}`> = {
+  background: '--bg-main',
+  border: '--border-color',
+  danger: '--color-danger',
+  dangerHover: '--color-danger-hover',
+  dangerLight: '--color-danger-light',
+  hoverBackground: '--bg-hover',
+  modalBackground: '--modal-bg',
+  modalBorder: '--modal-border',
+  overlay: '--overlay-bg',
+  primary: '--color-primary',
+  primaryAccent: '--color-primary-accent',
+  primaryHover: '--color-primary-hover',
+  primaryLight: '--color-primary-light',
+  primaryShadow: '--color-primary-shadow',
+  primarySoft: '--color-primary-soft',
+  primarySoftHover: '--color-primary-soft-hover',
+  controlAccent: '--control-accent',
+  controlBackground: '--control-bg',
+  controlBorder: '--control-border',
+  controlFocus: '--control-focus',
+  controlShadow: '--control-shadow',
+  sidebarBackground: '--bg-sidebar',
+  softBackground: '--bg-soft',
+  surfaceMuted: '--surface-muted',
+  surfaceMutedHover: '--surface-muted-hover',
+  swatchBorder: '--swatch-border',
+  task: '--color-task',
+  taskHover: '--color-task-hover',
+  taskShadow: '--color-task-shadow',
+  textMuted: '--text-muted',
+  textPrimary: '--text-primary',
+  textSecondary: '--text-secondary',
+  toolbarBackground: '--bg-toolbar',
+}
+
+const buildColorVariables = (colors: CalendarColors): Record<string, string> => {
+  const variables: Record<string, string> = { ...(colors.variables || {}) }
+  const primaryColor = colors.primary?.trim()
+
+  if (primaryColor) {
+    variables['--color-primary'] = primaryColor
+    variables['--color-primary-hover'] = colors.primaryHover || primaryColor
+    variables['--color-primary-accent'] = colors.primaryAccent || primaryColor
+
+    const primaryLight = hexToRgba(primaryColor, 0.12)
+    const primaryShadow = hexToRgba(primaryColor, 0.16)
+    const primarySoft = hexToRgba(primaryColor, 0.1)
+    const primarySoftHover = hexToRgba(primaryColor, 0.08)
+
+    if (primaryLight && !colors.primaryLight) {
+      variables['--color-primary-light'] = primaryLight
+    }
+
+    if (primaryShadow && !colors.primaryShadow) {
+      variables['--color-primary-shadow'] = primaryShadow
+    }
+
+    if (primarySoft && !colors.primarySoft) {
+      variables['--color-primary-soft'] = primarySoft
+    }
+
+    if (primarySoftHover && !colors.primarySoftHover) {
+      variables['--color-primary-soft-hover'] = primarySoftHover
+    }
+  }
+
+  for (const [key, variable] of Object.entries(colorVariableMap) as [Exclude<keyof CalendarColors, 'variables'>, `--${string}`][]) {
+    const value = colors[key]
+
+    if (typeof value === 'string' && value.trim()) {
+      variables[variable] = value.trim()
+    }
+  }
+
+  return variables
+}
+
+const rootStyle = computed(() => {
+  const variables = buildColorVariables(props.configColors)
+
+  return [variables as CSSProperties, attrs.style, props.style]
+})
 </script>
 
 <template>
   <slot v-if="headless" v-bind="slotProps"></slot>
 
-  <div v-else class="erag-cal-root">
+  <div v-else v-bind="rootAttrs" :class="rootClass" :style="rootStyle">
     <CalendarToolbar
       :search="calendarState.search.value"
       :can-create="permissions.create"

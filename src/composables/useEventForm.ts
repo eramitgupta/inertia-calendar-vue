@@ -2,6 +2,8 @@ import { reactive, ref, watch } from 'vue'
 import type { CalendarDefinition, CalendarEvent } from '../types'
 import { normalizeTime, timeToMinutes } from './useCalendar'
 
+const defaultCalendarColor = '#000000'
+
 interface EventFormOptions {
   calendars: () => CalendarDefinition[]
   event: () => CalendarEvent | null | undefined
@@ -20,14 +22,14 @@ export function useEventForm({ calendars, event, onSave, open, selectedDate }: E
     start: '09:00',
     end: '10:00',
     cal: '',
-    color: '#378ADD',
+    color: defaultCalendarColor,
     desc: '',
     mentioned_user_ids: [],
   })
 
   const resetForm = (): void => {
     const selectedEvent = event()
-    const calendar = calendars()[0] || { id: 'work', color: '#378ADD' }
+    const calendar = calendars()[0] || { id: 'work', color: defaultCalendarColor }
 
     form.id = selectedEvent?.id || null
     form.title = selectedEvent?.title || ''
@@ -35,7 +37,7 @@ export function useEventForm({ calendars, event, onSave, open, selectedDate }: E
     form.start = normalizeTime(selectedEvent?.start || '09:00')
     form.end = normalizeTime(selectedEvent?.end || '10:00')
     form.cal = selectedEvent?.cal || calendar.id
-    form.color = selectedEvent?.color || calendar.color || '#378ADD'
+    form.color = selectedEvent?.color || calendar.color || defaultCalendarColor
     form.desc = selectedEvent?.desc || ''
     form.mentioned_user_ids = [...(selectedEvent?.mentioned_user_ids || [])]
     timeError.value = ''

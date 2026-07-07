@@ -1,5 +1,5 @@
 import type { ComputedRef } from 'vue'
-import type { CalendarEvent, CalendarState, InertiaCalendarMutationResponse } from '../types'
+import type { CalendarEvent, CalendarState, CalendarMutationResponse } from '../types'
 import type { useInertiaCalendarEvents } from './useInertiaCalendarEvents'
 
 type InertiaCalendarEvents = ReturnType<typeof useInertiaCalendarEvents>
@@ -55,7 +55,7 @@ export function useCalendarMutations({ calendar, canDelete, closeModal, emit, in
 
     const request = isUpdate ? inertiaEvents.updateEvent(event) : inertiaEvents.createEvent(event)
 
-    request.then((response: InertiaCalendarMutationResponse | null) => {
+    request.then((response: CalendarMutationResponse | null) => {
       if (!response) {
         return
       }
@@ -77,7 +77,7 @@ export function useCalendarMutations({ calendar, canDelete, closeModal, emit, in
       return
     }
 
-    inertiaEvents.deleteEvent(event).then((response: InertiaCalendarMutationResponse | null) => {
+    inertiaEvents.deleteEvent(event).then((response: CalendarMutationResponse | null) => {
       if (!response) {
         return
       }

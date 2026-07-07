@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { watch, onUnmounted, ref } from 'vue'
-import { formatLongDate, formatTime, normalizeTime, parseDate } from '../composables/useCalendar'
+import { computed, watch } from 'vue'
+import { useBodyScrollLock } from '../composables/useBodyScrollLock'
+import { formatLongDate, formatTime, parseDate } from '../composables/useCalendar'
 import { calendarLabel, mentionedUsersLabel } from '../composables/useCalendarLabels'
 import { useEventForm } from '../composables/useEventForm'
+import { useEventTaskForm } from '../composables/useEventTaskForm'
 import { useMentionUsers } from '../composables/useMentionUsers'
 import { swatchColors } from '../constants'
-import type { CalendarDefinition, CalendarEvent, InertiaCalendarPermissions, MentionUser, ModalMode } from '../types'
+import type { CalendarDefinition, CalendarEvent, CalendarTaskPayload, EventModalTab, CalendarPermissions, MentionUser, ModalMode } from '../types'
+import DatePicker from './DatePicker.vue'
+import Select from './Select.vue'
+import TimePicker from './TimePicker.vue'
 
 const props = withDefaults(defineProps<{
   calendars: CalendarDefinition[]
@@ -14,10 +19,10 @@ const props = withDefaults(defineProps<{
   mentionUsersAllowed?: boolean
   mode?: ModalMode
   open?: boolean
-  permissions?: InertiaCalendarPermissions
+  permissions?: CalendarPermissions
   processing?: boolean
   selectedDate?: string
-  initialTab?: 'event' | 'task'
+  initialTab?: EventModalTab
 }>(), {
   event: null,
   mentionUsersAllowed: true,
@@ -35,7 +40,7 @@ const emit = defineEmits<{
   delete: [event: CalendarEvent]
   edit: [event: CalendarEvent]
   save: [event: CalendarEvent]
-  'save-task': [task: { title: string; date: string; time: string; allDay: boolean; desc: string; list: string }]
+  'save-task': [task: CalendarTaskPayload]
 }>()
 
 const { form, save, setCustomColor, timeError } = useEventForm({
@@ -45,6 +50,7 @@ const { form, save, setCustomColor, timeError } = useEventForm({
   open: () => props.open,
   selectedDate: () => props.selectedDate,
 })
+const resolvedMentionUsers = computed<MentionUser[]>(() => props.mentionUsers || [])
 const {
   addMentionUser,
   availableMentionUsers,
@@ -55,65 +61,51 @@ const {
   removeMentionUser,
   resetMentionSearch,
   selectedMentionUsers,
-} = useMentionUsers(form, () => props.mentionUsers)
+} = useMentionUsers(form, () => resolvedMentionUsers.value)
 
 watch(() => [props.open, props.event, props.selectedDate], resetMentionSearch, { immediate: true })
 
-const activeTab = ref<'event' | 'task'>('event')
+useBodyScrollLock(() => props.open)
 
-const taskTitle = ref('')
-const taskDate = ref('')
-const taskTime = ref('')
-const taskTimeEnabled = ref(false)
-const taskDesc = ref('')
-const taskList = ref('My Tasks')
-
-watch(() => props.open, (isOpen) => {
-  if (isOpen) {
-    document.body.classList.add('erag-no-scroll')
-    activeTab.value = props.initialTab || 'event'
-    
-    // Reset task form fields
-    taskTitle.value = ''
-    taskDate.value = props.selectedDate || new Date().toISOString().split('T')[0]
-    taskTime.value = '12:00'
-    taskTimeEnabled.value = false
-    taskDesc.value = ''
-    taskList.value = 'My Tasks'
-  } else {
-    document.body.classList.remove('erag-no-scroll')
-  }
-}, { immediate: true })
-
-onUnmounted(() => {
-  document.body.classList.remove('erag-no-scroll')
+const { enableTime, saveTask, task } = useEventTaskForm({
+  initialTab: () => props.initialTab,
+  onSave: (payload) => {
+    emit('save-task', payload)
+    close()
+  },
+  open: () => props.open,
+  selectedDate: () => props.selectedDate,
 })
 
-const saveTask = () => {
-  if (!taskTitle.value.trim()) {
-    return
-  }
-  emit('save-task', {
-    title: taskTitle.value,
-    date: taskDate.value,
-    time: taskTimeEnabled.value ? taskTime.value : '',
-    allDay: !taskTimeEnabled.value,
-    desc: taskDesc.value,
-    list: taskList.value,
-  })
+const modalTitle = computed(() => {
+  const type = task.activeTab === 'event' ? 'event' : 'task'
+
+  return `${form.id ? 'Edit' : 'New'} ${type}`
+})
+
+const resolvedPermissions = computed<Required<CalendarPermissions>>(() => ({
+  create: true,
+  delete: true,
+  update: true,
+  ...props.permissions,
+}))
+
+const detailMentionedUsersLabel = computed(() => props.event ? mentionedUsersLabel(resolvedMentionUsers.value, props.event) : '')
+
+const close = (): void => {
   emit('close')
 }
 </script>
 
 <template>
-  <div v-if="open" class="erag-overlay" @click.self="$emit('close')">
+  <div v-if="open" class="erag-overlay" @click.self="close">
     <div class="erag-modal">
       <!-- Detail View Mode -->
       <template v-if="mode === 'detail' && event">
         <div class="erag-detail-bar" :style="{ background: event.color }"></div>
         <div class="erag-modal-hdr">
           <span class="erag-modal-title">{{ event.title }}</span>
-          <button class="erag-modal-close" title="Close" @click="$emit('close')">
+          <button class="erag-modal-close" title="Close" @click="close">
             <svg class="erag-modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 6 6 18"></path>
               <path d="m6 6 12 12"></path>
@@ -159,7 +151,7 @@ const saveTask = () => {
           </span>
           <span>{{ calendarLabel(calendars, event) }}</span>
         </div>
-        <div v-if="mentionedUsersLabel(mentionUsers, event)" class="erag-detail-row">
+        <div v-if="detailMentionedUsersLabel" class="erag-detail-row">
           <span class="erag-detail-icon" title="Mentioned users">
             <svg viewBox="0 0 24 24">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -168,12 +160,12 @@ const saveTask = () => {
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
           </span>
-          <span>{{ mentionedUsersLabel(mentionUsers, event) }}</span>
+          <span>{{ detailMentionedUsersLabel }}</span>
         </div>
         <div class="erag-modal-footer">
-          <button v-if="permissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', event)">Delete</button>
-          <button class="erag-btn" @click="$emit('close')">Close</button>
-          <button v-if="permissions.update" class="erag-btn erag-btn-primary" :disabled="processing" @click="$emit('edit', event)">Edit</button>
+          <button v-if="resolvedPermissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', event)">Delete</button>
+          <button class="erag-btn" @click="close">Close</button>
+          <button v-if="resolvedPermissions.update" class="erag-btn erag-btn-primary" :disabled="processing" @click="$emit('edit', event)">Edit</button>
         </div>
       </template>
 
@@ -182,9 +174,9 @@ const saveTask = () => {
         <!-- Modal Header -->
         <div class="erag-modal-hdr" style="margin-bottom: 8px;">
           <span class="erag-modal-title">
-            {{ form.id ? (activeTab === 'event' ? 'Edit event' : 'Edit task') : (activeTab === 'event' ? 'New event' : 'New task') }}
+            {{ modalTitle }}
           </span>
-          <button class="erag-modal-close" title="Cancel" @click="$emit('close')">
+          <button class="erag-modal-close" title="Cancel" @click="close">
             <svg class="erag-modal-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 6 6 18"></path>
               <path d="m6 6 12 12"></path>
@@ -197,24 +189,24 @@ const saveTask = () => {
           <button
             type="button"
             class="erag-tab-pill"
-            :class="{ 'erag-active': activeTab === 'event' }"
-            @click="activeTab = 'event'"
+            :class="{ 'erag-active': task.activeTab === 'event' }"
+            @click="task.activeTab = 'event'"
           >
             Event
           </button>
           <button
             type="button"
             class="erag-tab-pill"
-            :class="{ 'erag-active': activeTab === 'task' }"
-            @click="activeTab = 'task'"
+            :class="{ 'erag-active': task.activeTab === 'task' }"
+            @click="task.activeTab = 'task'"
           >
             Task
           </button>
         </div>
 
         <!-- EVENT FORM CONTENT -->
-        <template v-if="activeTab === 'event'">
-          <div class="erag-form-group" style="padding-left: 40px; margin-bottom: 20px;">
+        <template v-if="task.activeTab === 'event'">
+          <div class="erag-form-group erag-title-row">
             <input v-model="form.title" class="erag-title-input" placeholder="Add title" autofocus>
           </div>
 
@@ -229,16 +221,16 @@ const saveTask = () => {
               <div class="erag-form-group erag-form-row" style="margin-bottom: 0;">
                 <div>
                   <label class="erag-form-label">Date</label>
-                  <input v-model="form.date" class="erag-form-input" type="date">
+                  <DatePicker v-model="form.date" />
                 </div>
-                <div class="erag-form-row">
+                <div class="erag-form-row erag-time-field-grid">
                   <div>
                     <label class="erag-form-label">Start</label>
-                    <input v-model="form.start" class="erag-form-input" type="time" @blur="form.start = normalizeTime(form.start)">
+                    <TimePicker v-model="form.start" class="erag-picker-align-right" />
                   </div>
                   <div>
                     <label class="erag-form-label">End</label>
-                    <input v-model="form.end" class="erag-form-input" type="time" @blur="form.end = normalizeTime(form.end)">
+                    <TimePicker v-model="form.end" class="erag-picker-align-right" />
                   </div>
                 </div>
               </div>
@@ -254,13 +246,11 @@ const saveTask = () => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <select v-model="form.cal" class="erag-form-input">
-                <option v-for="calendar in calendars" :key="calendar.id" :value="calendar.id">{{ calendar.label }}</option>
-              </select>
+              <Select v-model="form.cal" :options="calendars.map((c) => ({ label: c.label, value: c.id }))" placeholder="Select calendar" />
             </div>
           </div>
 
-          <div v-if="mentionUsersAllowed && mentionUsers.length" class="erag-field-row">
+          <div v-if="mentionUsersAllowed && resolvedMentionUsers.length" class="erag-field-row">
             <div class="erag-field-icon" title="Mentions">
               <svg viewBox="0 0 24 24">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -353,16 +343,16 @@ const saveTask = () => {
           </div>
 
           <div class="erag-modal-footer">
-            <button v-if="form.id && permissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', { ...form })">Delete</button>
-            <button class="erag-btn" @click="$emit('close')">Cancel</button>
-            <button v-if="form.id ? permissions.update : permissions.create" class="erag-btn erag-btn-primary" :disabled="processing" @click="save">{{ form.id ? 'Update' : 'Save' }}</button>
+            <button v-if="form.id && resolvedPermissions.delete" class="erag-btn erag-btn-danger" :disabled="processing" @click="$emit('delete', { ...form })">Delete</button>
+            <button class="erag-btn" @click="close">Cancel</button>
+            <button v-if="form.id ? resolvedPermissions.update : resolvedPermissions.create" class="erag-btn erag-btn-primary" :disabled="processing" @click="save">{{ form.id ? 'Update' : 'Save' }}</button>
           </div>
         </template>
 
         <!-- TASK FORM CONTENT -->
         <template v-else>
-          <div class="erag-form-group" style="padding-left: 40px; margin-bottom: 20px;">
-            <input v-model="taskTitle" class="erag-title-input" placeholder="Add title" autofocus>
+          <div class="erag-form-group erag-title-row">
+            <input v-model="task.title" class="erag-title-input" placeholder="Add title" autofocus>
           </div>
 
           <!-- Date Selector Row -->
@@ -377,11 +367,11 @@ const saveTask = () => {
             </div>
             <div class="erag-field-content">
               <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <input v-model="taskDate" class="erag-form-input" type="date" style="max-width: 160px; margin-bottom: 0;">
-                
+                <DatePicker v-model="task.date" class="erag-task-date-picker" />
+
                 <!-- Time Selector -->
-                <input v-if="taskTimeEnabled" v-model="taskTime" class="erag-form-input" type="time" style="max-width: 120px; margin-bottom: 0;">
-                <button v-else type="button" class="erag-add-time-btn" @click="taskTimeEnabled = true">
+                <TimePicker v-if="task.timeEnabled" v-model="task.time" class="erag-task-time-picker" />
+                <button v-else type="button" class="erag-add-time-btn" @click="enableTime">
                   Add time
                 </button>
               </div>
@@ -398,7 +388,7 @@ const saveTask = () => {
               </svg>
             </div>
             <div class="erag-field-content" style="display: flex; align-items: center; height: 36px;">
-              <span style="color: var(--text-muted); font-size: 13.5px; cursor: pointer;" @click="taskTimeEnabled = true">Add deadline</span>
+              <span style="color: var(--text-muted); font-size: 13.5px; cursor: pointer;" @click="enableTime">Add deadline</span>
             </div>
           </div>
 
@@ -412,7 +402,7 @@ const saveTask = () => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <textarea v-model="taskDesc" rows="3" class="erag-form-input" placeholder="Add description or a Google Drive attachment"></textarea>
+              <textarea v-model="task.desc" rows="3" class="erag-form-input" placeholder="Add description or a Google Drive attachment"></textarea>
             </div>
           </div>
 
@@ -429,17 +419,21 @@ const saveTask = () => {
               </svg>
             </div>
             <div class="erag-field-content">
-              <select v-model="taskList" class="erag-task-list-select">
-                <option value="My Tasks">My Tasks</option>
-                <option value="Work Tasks">Work Tasks</option>
-                <option value="Personal Tasks">Personal Tasks</option>
-              </select>
+              <Select
+                v-model="task.list"
+                :options="[
+                  { label: 'My Tasks', value: 'My Tasks' },
+                  { label: 'Work Tasks', value: 'Work Tasks' },
+                  { label: 'Personal Tasks', value: 'Personal Tasks' },
+                ]"
+                placeholder="Select task list"
+              />
             </div>
           </div>
 
           <div class="erag-modal-footer">
-            <button class="erag-btn" @click="$emit('close')">Cancel</button>
-            <button class="erag-btn erag-btn-primary" :disabled="!taskTitle.trim()" @click="saveTask">Save</button>
+            <button class="erag-btn" @click="close">Cancel</button>
+            <button class="erag-btn erag-btn-primary" :disabled="!task.title.trim()" @click="saveTask">Save</button>
           </div>
         </template>
       </template>
