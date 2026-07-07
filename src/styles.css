@@ -902,7 +902,6 @@
 
 .erag-modal {
   width: 640px;
-  min-height: 520px;
   max-width: calc(100vw - 32px);
   max-height: 90vh;
   overflow-y: auto;
